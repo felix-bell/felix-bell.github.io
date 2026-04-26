@@ -9,11 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-  /* ---------- THEME TOKENS ---------- */
   :root {
     --accent: #E63312;
     --accent-soft: rgba(230, 51, 18, 0.08);
-    --accent-glow: rgba(230, 51, 18, 0.25);
+    --accent-glow: rgba(230, 51, 18, 0.22);
     --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     --transition-fast: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     --font-display: 'Inter Tight', sans-serif;
@@ -23,23 +22,23 @@
     --bg: #0a0a0b;
     --bg-elevated: #131316;
     --bg-card: #16161a;
-    --border: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
     --text: #f5f5f7;
     --text-muted: #8a8a93;
     --text-subtle: #4a4a52;
-    --grid-line: rgba(255, 255, 255, 0.03);
+    --grid-line: rgba(255,255,255,0.03);
   }
   [data-theme="light"] {
     --bg: #fafaf8;
     --bg-elevated: #ffffff;
     --bg-card: #ffffff;
-    --border: rgba(0, 0, 0, 0.08);
-    --border-strong: rgba(0, 0, 0, 0.16);
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.16);
     --text: #0a0a0b;
     --text-muted: #5a5a63;
     --text-subtle: #a0a0a8;
-    --grid-line: rgba(0, 0, 0, 0.04);
+    --grid-line: rgba(0,0,0,0.04);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -65,7 +64,6 @@
     -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   }
 
-  /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 1.25rem 2.5rem;
@@ -83,7 +81,9 @@
     letter-spacing: 0.1em; color: var(--text);
     text-decoration: none; text-transform: uppercase;
   }
-  .logo-mark img { height: 36px; width: auto; display: block; }
+  .logo-mark img { height: 36px; width: auto; display: none; }
+  [data-theme="dark"] .logo-mark .logo-dark { display: block; }
+  [data-theme="light"] .logo-mark .logo-light { display: block; }
   .logo-mark .divider { width: 1px; height: 18px; background: var(--border-strong); }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; counter-reset: navcount; }
   .nav-links a {
@@ -189,6 +189,123 @@
     100% { transform: scaleY(0); transform-origin: bottom; }
   }
 
+  /* PROJECT CARDS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    position: relative;
+  }
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px var(--accent-glow);
+  }
+  .project-card.featured {
+    grid-column: 1 / -1;
+    flex-direction: row;
+  }
+  .card-visual {
+    background: var(--bg-elevated);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .project-card.featured .card-visual {
+    width: 55%;
+    min-height: 340px;
+  }
+  .project-card:not(.featured) .card-visual {
+    aspect-ratio: 4 / 3;
+  }
+  .card-visual canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .viewer-corners { position: absolute; inset: 0; pointer-events: none; }
+  .corner {
+    position: absolute; width: 14px; height: 14px;
+    border-color: var(--accent); border-style: solid; border-width: 0;
+  }
+  .corner.tl { top: 10px; left: 10px; border-top-width: 1px; border-left-width: 1px; }
+  .corner.tr { top: 10px; right: 10px; border-top-width: 1px; border-right-width: 1px; }
+  .corner.bl { bottom: 10px; left: 10px; border-bottom-width: 1px; border-left-width: 1px; }
+  .corner.br { bottom: 10px; right: 10px; border-bottom-width: 1px; border-right-width: 1px; }
+  .card-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .card-number {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .project-card.featured .card-title {
+    font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+  .card-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+    flex: 1;
+  }
+  .project-card:not(.featured) .card-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .tag {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    color: var(--text-muted); padding: 0.35rem 0.65rem;
+    border: 1px solid var(--border); border-radius: 100px;
+    letter-spacing: 0.04em;
+  }
+  .card-cta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: gap var(--transition-fast);
+    margin-top: auto;
+  }
+  .project-card:hover .card-cta { gap: 0.85rem; }
+
   /* ABOUT */
   .about-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
   .about h2 {
@@ -210,165 +327,6 @@
     letter-spacing: 0.1em; margin-bottom: 0.4rem;
   }
   .info-item .value { font-size: 0.95rem; color: var(--text); }
-
-  /* PROJECTS */
-  .projects-header {
-    display: flex; justify-content: space-between; align-items: end;
-    margin-bottom: 4rem; flex-wrap: wrap; gap: 2rem;
-  }
-  .projects-header h2 {
-    font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500;
-    line-height: 1.05; letter-spacing: -0.03em;
-  }
-  .projects-header h2 em { color: var(--accent); font-style: italic; font-weight: 400; }
-  .project-count { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
-
-  .project {
-    border-top: 1px solid var(--border);
-    padding: 4rem 0;
-    display: grid; grid-template-columns: 1fr 1.2fr;
-    gap: 4rem; align-items: center; position: relative;
-  }
-  .project:last-child { border-bottom: 1px solid var(--border); }
-  .project.featured { grid-template-columns: 1fr; gap: 3rem; }
-  .project-info { padding-right: 2rem; }
-  .project.featured .project-info { padding-right: 0; max-width: 720px; }
-  .project-number {
-    font-family: var(--font-mono); font-size: 0.72rem;
-    color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem;
-  }
-  .project h3 {
-    font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500;
-    line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.25rem;
-  }
-  .project-description {
-    color: var(--text-muted); font-size: 1rem;
-    line-height: 1.65; margin-bottom: 1.75rem;
-  }
-  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
-  .tag {
-    font-family: var(--font-mono); font-size: 0.7rem;
-    color: var(--text-muted); padding: 0.4rem 0.75rem;
-    border: 1px solid var(--border); border-radius: 100px;
-    letter-spacing: 0.05em;
-  }
-  .project-specs {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 1rem 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;
-  }
-  .project.featured .project-specs { grid-template-columns: repeat(4, 1fr); }
-  .spec-row { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.78rem; }
-  .spec-row .key { color: var(--text-muted); }
-  .spec-row .val { color: var(--text); }
-
-  /* MODEL VIEWER */
-  .model-viewer {
-    position: relative; aspect-ratio: 4 / 3;
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 4px; overflow: hidden; cursor: grab;
-    transition: border-color var(--transition);
-  }
-  .model-viewer.featured { aspect-ratio: 16 / 9; }
-  .model-viewer:hover { border-color: var(--border-strong); }
-  .model-viewer:active { cursor: grabbing; }
-  .model-viewer canvas { display: block; width: 100%; height: 100%; }
-
-  .viewer-overlay {
-    position: absolute; inset: 0; pointer-events: none;
-    display: flex; flex-direction: column;
-    justify-content: space-between; padding: 1rem;
-  }
-  .viewer-corners { position: absolute; inset: 0; }
-  .corner {
-    position: absolute; width: 16px; height: 16px;
-    border-color: var(--accent); border-style: solid; border-width: 0;
-  }
-  .corner.tl { top: 12px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
-  .corner.tr { top: 12px; right: 12px; border-top-width: 1px; border-right-width: 1px; }
-  .corner.bl { bottom: 12px; left: 12px; border-bottom-width: 1px; border-left-width: 1px; }
-  .corner.br { bottom: 12px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
-  .viewer-meta {
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 0.65rem;
-    color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
-  }
-  .viewer-meta .loading { color: var(--accent); }
-  .viewer-hint {
-    align-self: center; font-family: var(--font-mono); font-size: 0.7rem;
-    color: var(--text-subtle);
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    padding: 0.4rem 0.8rem; border-radius: 100px;
-    border: 1px solid var(--border);
-    opacity: 0; transition: opacity var(--transition);
-  }
-  .model-viewer:hover .viewer-hint { opacity: 1; }
-
-  .viewer-loader {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg-card); z-index: 5;
-    transition: opacity var(--transition);
-  }
-  .viewer-loader.hidden { opacity: 0; pointer-events: none; }
-  .loader-dots { display: flex; gap: 6px; }
-  .loader-dots span {
-    width: 6px; height: 6px;
-    background: var(--accent); border-radius: 50%;
-    animation: loaderPulse 1.4s ease-in-out infinite;
-  }
-  .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes loaderPulse {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.4); opacity: 1; }
-  }
-
-  /* MARBLE CONTROLS */
-  .marble-controls {
-    display: flex; justify-content: center; gap: 0.5rem;
-    margin-bottom: 1.5rem; flex-wrap: wrap;
-  }
-  .control-group {
-    display: flex; background: var(--bg-card);
-    border: 1px solid var(--border); border-radius: 100px; padding: 4px;
-  }
-  .control-btn {
-    background: transparent; border: none; color: var(--text-muted);
-    padding: 0.5rem 1rem; font-family: var(--font-mono);
-    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
-    cursor: pointer; border-radius: 100px;
-    transition: all var(--transition-fast);
-  }
-  .control-btn:hover { color: var(--text); }
-  .control-btn.active { background: var(--accent); color: #fff; }
-
-  .parts-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.75rem; margin-top: 1.5rem;
-  }
-  .part-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 4px; padding: 1rem; cursor: pointer;
-    text-align: left; transition: all var(--transition-fast);
-    font-family: var(--font-mono); color: var(--text);
-    position: relative; overflow: hidden;
-  }
-  .part-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .part-card.active { border-color: var(--accent); background: var(--accent-soft); }
-  .part-card .part-num {
-    font-size: 0.65rem; color: var(--text-subtle);
-    letter-spacing: 0.1em; margin-bottom: 0.4rem;
-  }
-  .part-card .part-name {
-    font-size: 0.85rem; font-weight: 500;
-    color: var(--text); margin-bottom: 0.4rem;
-  }
-  .part-card .part-tris { font-size: 0.65rem; color: var(--text-muted); }
-  .part-card .part-color {
-    position: absolute; top: 1rem; right: 1rem;
-    width: 8px; height: 8px; border-radius: 50%;
-    box-shadow: 0 0 0 1px var(--border);
-  }
 
   /* CONTACT */
   .contact { text-align: center; padding: 10rem 2.5rem; }
@@ -412,11 +370,13 @@
     flex-wrap: wrap; gap: 1rem;
   }
   footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
-  footer .footer-logo img { height: 18px; }
+  footer .footer-logo img { height: 18px; display: none; }
+  [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
+  [data-theme="light"] footer .footer-logo .logo-light { display: block; }
 
   .reveal {
-    opacity: 0; transform: translateY(32px);
-    transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
   .reveal-delay-1 { transition-delay: 0.1s; }
@@ -433,11 +393,10 @@
     .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
     .stat-value { font-size: 1.4rem; }
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .project { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 0; }
-    .project-info { padding-right: 0; }
-    .project.featured .project-specs { grid-template-columns: repeat(2, 1fr); }
     .contact { padding: 6rem 1.5rem; }
-    .parts-grid { grid-template-columns: repeat(2, 1fr); }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { flex-direction: column; }
+    .project-card.featured .card-visual { width: 100%; min-height: 240px; }
   }
 </style>
 </head>
@@ -446,8 +405,9 @@
 <div class="grid-bg"></div>
 
 <nav id="nav">
-  <a href="#" class="logo-mark">
-    <img src="assets/logo.png" alt="F3 Logo" />
+  <a href="index.html" class="logo-mark">
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
     <span class="divider"></span>
     <span class="logo-text">F3_lix / Portfolio</span>
   </a>
@@ -475,9 +435,9 @@
       <span id="liveTime">— : —</span>
     </div>
     <h1>
-      <span class="word" style="animation-delay: 0.1s">Engineering</span><br/>
-      <span class="word" style="animation-delay: 0.25s">meets</span>
-      <span class="word accent" style="animation-delay: 0.4s">design.</span>
+      <span class="word" style="animation-delay:0.1s">Engineering</span><br/>
+      <span class="word" style="animation-delay:0.25s">meets</span>
+      <span class="word accent" style="animation-delay:0.4s">design.</span>
     </h1>
     <div class="hero-grid">
       <p class="hero-description reveal reveal-delay-1">
@@ -492,6 +452,154 @@
       </div>
     </div>
     <div class="scroll-indicator">SCROLL</div>
+  </section>
+
+  <section class="projects" id="work">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3rem; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <div class="section-label reveal">02 / Selected Work</div>
+        <h2 class="reveal" style="font-size:clamp(2rem,4vw,3.5rem);font-weight:500;letter-spacing:-0.03em;line-height:1.05;">
+          Projekte, <em style="color:var(--accent);font-style:italic;font-weight:400;">die zählen</em>.
+        </h2>
+      </div>
+      <span class="reveal reveal-delay-1" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);">[ 05 PROJEKTE — 2024–2026 ]</span>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- FEATURED: MARBLE RUN -->
+      <a href="marble-run.html" class="project-card featured reveal">
+        <div class="card-visual">
+          <canvas id="card0" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 001 — FEATURED</div>
+          <h3 class="card-title">Infinite Marble Run</h3>
+          <p class="card-desc">
+            Motorisierte Endlos-Kugelbahn mit integrierter LED-Beleuchtung und
+            elektronischer Drehzahlregelung. 13 einzigartige Bauteile, vollständig
+            druckoptimiert — von der mechanischen Lagerung über das Antriebszahnrad
+            bis zum Lichtring.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Bambu Studio</span>
+            <span class="tag">3D-Druck</span>
+            <span class="tag">Mechatronik</span>
+            <span class="tag">DFM</span>
+            <span class="tag">Baugruppe</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+      <!-- PROJEKT 002 -->
+      <a href="projekt.html?id=2" class="project-card reveal">
+        <div class="card-visual">
+          <canvas id="card1" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 002</div>
+          <h3 class="card-title">Funktionsbauteil — Prototyp</h3>
+          <p class="card-desc">
+            Komplexes Funktionsteil mit organisch geformter Geometrie,
+            rekonstruiert aus STL-Vorlage. Iterative Topologie-Optimierung
+            für 3D-Druck-Eignung.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Fusion 360</span>
+            <span class="tag">Reverse Engineering</span>
+            <span class="tag">3D-Druck</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+      <!-- PROJEKT 003 -->
+      <a href="projekt.html?id=3" class="project-card reveal">
+        <div class="card-visual">
+          <canvas id="card2" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 003</div>
+          <h3 class="card-title">Halterung & Montagebaugruppe</h3>
+          <p class="card-desc">
+            Parametrische Halterungs-Konstruktion mit toleranzgerechten
+            Passungen. Konzipiert für robusten Einsatz unter mechanischer Last.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Fusion 360</span>
+            <span class="tag">Toleranzanalyse</span>
+            <span class="tag">FEM</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+      <!-- PROJEKT 004 -->
+      <a href="projekt.html?id=4" class="project-card reveal">
+        <div class="card-visual">
+          <canvas id="card3" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 004</div>
+          <h3 class="card-title">Getriebe-Konzeptstudie</h3>
+          <p class="card-desc">
+            Kompaktes Getriebe mit Fokus auf minimalem Bauraum.
+            Sämtliche Verzahnungen aus Konstruktionsregeln modelliert.
+          </p>
+          <div class="card-tags">
+            <span class="tag">CAD</span>
+            <span class="tag">Mechanik</span>
+            <span class="tag">Konzept</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+      <!-- PROJEKT 005 -->
+      <a href="projekt.html?id=5" class="project-card reveal" style="grid-column: 1 / -1; flex-direction: row;">
+        <div class="card-visual" style="width:40%; min-height:240px; flex-shrink:0;">
+          <canvas id="card4" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 005</div>
+          <h3 class="card-title">Strukturbauteil — leichtbaugerecht</h3>
+          <p class="card-desc">
+            Topologie-optimiertes Strukturbauteil mit reduzierter Masse bei erhaltener
+            Steifigkeit. Ergebnis einer iterativen Auslegung zwischen FEM-Simulation
+            und konstruktiver Umsetzung. Massereduktion von 42 % gegenüber dem
+            unoptimierten Ausgangsentwurf.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Topologie-Opt.</span>
+            <span class="tag">Leichtbau</span>
+            <span class="tag">Simulation</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+    </div>
   </section>
 
   <section class="about" id="about">
@@ -520,214 +628,8 @@
     </div>
   </section>
 
-  <section class="projects" id="work">
-    <div class="projects-header">
-      <div>
-        <div class="section-label reveal">02 / Selected Work</div>
-        <h2 class="reveal">Projekte, <em>die zählen</em>.</h2>
-      </div>
-      <div class="project-count reveal reveal-delay-1">[ 05 PROJEKTE — 2024–2026 ]</div>
-    </div>
-
-    <!-- FEATURED: INFINITE MARBLE RUN -->
-    <article class="project featured reveal">
-      <div class="project-info">
-        <div class="project-number">PROJEKT // 001 — FEATURED</div>
-        <h3>Infinite Marble Run</h3>
-        <p class="project-description">
-          Eine vollständig konstruierte, motorisierte Endlos-Kugelbahn mit
-          integrierter LED-Beleuchtung und elektronischer Drehzahlregelung.
-          Aus 13 unterschiedlichen Bauteilen entwickelt — von der mechanischen
-          Lagerung über das Antriebs-Zahnrad bis zum Lichtring. Alle Teile
-          sind druckoptimiert und greifen präzise ineinander.
-        </p>
-        <div class="project-tags">
-          <span class="tag">Bambu Studio</span>
-          <span class="tag">3D-Druck</span>
-          <span class="tag">Mechatronik</span>
-          <span class="tag">DFM</span>
-          <span class="tag">Baugruppe</span>
-        </div>
-      </div>
-
-      <div class="marble-controls">
-        <div class="control-group">
-          <button class="control-btn active" data-mode="assembly">Baugruppe</button>
-          <button class="control-btn" data-mode="exploded">Explosion</button>
-          <button class="control-btn" data-mode="parts">Einzelteile</button>
-        </div>
-      </div>
-
-      <div class="model-viewer featured" id="marbleViewer">
-        <div class="viewer-loader" id="marbleLoader">
-          <div class="loader-dots"><span></span><span></span><span></span></div>
-        </div>
-        <div class="viewer-corners">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-        </div>
-        <div class="viewer-overlay">
-          <div class="viewer-meta">
-            <span id="marbleTitle">INFINITE_MARBLE_RUN.GLB</span>
-            <span id="marbleStatus" class="loading">LOADING…</span>
-          </div>
-          <div class="viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
-          <div class="viewer-meta">
-            <span id="marbleRot">ROT 0°</span>
-            <span id="marbleParts">19 PARTS</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="parts-grid" id="partsGrid"></div>
-
-      <div class="project-specs">
-        <div class="spec-row"><span class="key">Bauteile</span><span class="val">13 unique</span></div>
-        <div class="spec-row"><span class="key">Instanzen</span><span class="val">19</span></div>
-        <div class="spec-row"><span class="key">Triangles</span><span class="val">~85k</span></div>
-        <div class="spec-row"><span class="key">Status</span><span class="val">Released</span></div>
-      </div>
-    </article>
-
-    <article class="project reveal">
-      <div class="project-info">
-        <div class="project-number">PROJEKT // 002</div>
-        <h3>Funktionsbauteil — Prototyp</h3>
-        <p class="project-description">
-          Komplexes Funktionsteil mit organisch geformter Geometrie,
-          ursprünglich rekonstruiert aus einer STL-Vorlage. Iterative
-          Optimierung der Topologie für 3D-Druck-Eignung.
-        </p>
-        <div class="project-tags">
-          <span class="tag">Fusion 360</span>
-          <span class="tag">Reverse Engineering</span>
-          <span class="tag">3D-Druck</span>
-        </div>
-        <div class="project-specs">
-          <div class="spec-row"><span class="key">Format</span><span class="val">STL</span></div>
-          <div class="spec-row"><span class="key">Polys</span><span class="val">~48k</span></div>
-          <div class="spec-row"><span class="key">Status</span><span class="val">Iteration v3</span></div>
-          <div class="spec-row"><span class="key">Jahr</span><span class="val">2025</span></div>
-        </div>
-      </div>
-      <div class="model-viewer" data-placeholder="1">
-        <div class="viewer-corners">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-        </div>
-        <div class="viewer-overlay">
-          <div class="viewer-meta"><span>MODEL.002</span><span>STL</span></div>
-          <div class="viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
-          <div class="viewer-meta"><span class="rotLabel">ROT 0°</span><span>READY</span></div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project reveal">
-      <div class="project-info">
-        <div class="project-number">PROJEKT // 003</div>
-        <h3>Halterung & Montagebaugruppe</h3>
-        <p class="project-description">
-          Parametrische Halterungs-Konstruktion mit toleranzgerechten
-          Passungen und durchgängiger Maßkette. Konzipiert für robusten
-          Einsatz unter mechanischer Last.
-        </p>
-        <div class="project-tags">
-          <span class="tag">Fusion 360</span>
-          <span class="tag">Toleranzanalyse</span>
-          <span class="tag">FEM</span>
-        </div>
-        <div class="project-specs">
-          <div class="spec-row"><span class="key">Format</span><span class="val">STEP</span></div>
-          <div class="spec-row"><span class="key">Bauteile</span><span class="val">14</span></div>
-          <div class="spec-row"><span class="key">Status</span><span class="val">Fertig</span></div>
-          <div class="spec-row"><span class="key">Jahr</span><span class="val">2024</span></div>
-        </div>
-      </div>
-      <div class="model-viewer" data-placeholder="2">
-        <div class="viewer-corners">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-        </div>
-        <div class="viewer-overlay">
-          <div class="viewer-meta"><span>MODEL.003</span><span>STEP</span></div>
-          <div class="viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
-          <div class="viewer-meta"><span class="rotLabel">ROT 0°</span><span>READY</span></div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project reveal">
-      <div class="project-info">
-        <div class="project-number">PROJEKT // 004</div>
-        <h3>Getriebe-Konzeptstudie</h3>
-        <p class="project-description">
-          Konzeptionelle Untersuchung eines kompakten Getriebes mit Fokus
-          auf minimalem Bauraum und sauberer Übersetzungsgeometrie.
-          Modellierung sämtlicher Verzahnungen aus Konstruktionsregeln.
-        </p>
-        <div class="project-tags">
-          <span class="tag">CAD</span>
-          <span class="tag">Mechanik</span>
-          <span class="tag">Konzept</span>
-        </div>
-        <div class="project-specs">
-          <div class="spec-row"><span class="key">Format</span><span class="val">STEP</span></div>
-          <div class="spec-row"><span class="key">Bauteile</span><span class="val">8</span></div>
-          <div class="spec-row"><span class="key">Status</span><span class="val">Konzept</span></div>
-          <div class="spec-row"><span class="key">Jahr</span><span class="val">2024</span></div>
-        </div>
-      </div>
-      <div class="model-viewer" data-placeholder="3">
-        <div class="viewer-corners">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-        </div>
-        <div class="viewer-overlay">
-          <div class="viewer-meta"><span>MODEL.004</span><span>STEP</span></div>
-          <div class="viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
-          <div class="viewer-meta"><span class="rotLabel">ROT 0°</span><span>READY</span></div>
-        </div>
-      </div>
-    </article>
-
-    <article class="project reveal">
-      <div class="project-info">
-        <div class="project-number">PROJEKT // 005</div>
-        <h3>Strukturbauteil — leichtbaugerecht</h3>
-        <p class="project-description">
-          Topologie-optimiertes Strukturbauteil mit reduzierter Masse bei
-          erhaltener Steifigkeit. Ergebnis einer iterativen Auslegung
-          zwischen FEM-Simulation und konstruktiver Umsetzung.
-        </p>
-        <div class="project-tags">
-          <span class="tag">Topologie-Opt.</span>
-          <span class="tag">Leichtbau</span>
-          <span class="tag">Simulation</span>
-        </div>
-        <div class="project-specs">
-          <div class="spec-row"><span class="key">Format</span><span class="val">STEP</span></div>
-          <div class="spec-row"><span class="key">Massereduktion</span><span class="val">−42%</span></div>
-          <div class="spec-row"><span class="key">Status</span><span class="val">Validiert</span></div>
-          <div class="spec-row"><span class="key">Jahr</span><span class="val">2026</span></div>
-        </div>
-      </div>
-      <div class="model-viewer" data-placeholder="4">
-        <div class="viewer-corners">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-        </div>
-        <div class="viewer-overlay">
-          <div class="viewer-meta"><span>MODEL.005</span><span>STEP</span></div>
-          <div class="viewer-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
-          <div class="viewer-meta"><span class="rotLabel">ROT 0°</span><span>READY</span></div>
-        </div>
-      </div>
-    </article>
-  </section>
-
   <section class="contact" id="contact">
-    <div class="section-label reveal" style="justify-content: center;">03 / Kontakt</div>
+    <div class="section-label reveal" style="justify-content:center;">03 / Kontakt</div>
     <h2 class="reveal reveal-delay-1">Lass uns etwas <em>bauen</em>.</h2>
     <a href="mailto:hello@example.com" class="contact-email reveal reveal-delay-2">
       <span>→</span> hello@example.com
@@ -742,7 +644,8 @@
 
 <footer>
   <div class="footer-logo">
-    <img src="assets/logo.png" alt="F3 Logo" />
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
     <span>© 2026 — F3_lix</span>
   </div>
   <span>Crafted with precision</span>
@@ -750,14 +653,11 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
   const themeToggle = document.getElementById('themeToggle');
   const html = document.documentElement;
   themeToggle.addEventListener('click', () => {
-    const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
-    html.dataset.theme = next;
-    allViewers.forEach(v => v.updateTheme && v.updateTheme(next));
+    html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
   });
 
   const nav = document.getElementById('nav');
@@ -774,303 +674,17 @@
   updateTime();
   setInterval(updateTime, 30000);
 
-  const observer = new IntersectionObserver((entries) => {
+  const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-  const allViewers = [];
-
-  const PARTS_INFO = [
-    { name: 'Base',        file: 'Base.glb',         color: 0x52525a, desc: 'Hauptgehäuse' },
-    { name: 'Disc',        file: 'Disc.glb',         color: 0xc73420, desc: 'Drehscheibe' },
-    { name: 'Rail',        file: 'Rail.glb',         color: 0x8c8c92, desc: 'Schiene (×4)' },
-    { name: 'Wave',        file: 'Wave.glb',         color: 0x7a7a80, desc: 'Wellenbahn' },
-    { name: 'Ground',      file: 'Ground.glb',       color: 0x484850, desc: 'Bodenplatte' },
-    { name: 'Bracket',     file: 'Bracket.glb',      color: 0x6c6c72, desc: 'Motorhalter' },
-    { name: 'Box_Bracket', file: 'Box_Bracket.glb',  color: 0x6c6c72, desc: 'Akkuhalter' },
-    { name: 'Lightholder', file: 'Lightholder.glb',  color: 0xd8d8dc, desc: 'LED-Aufnahme' },
-    { name: 'Lightring',   file: 'Lightring.glb',    color: 0xfff0c0, desc: 'Lichtring' },
-    { name: 'Topplate',    file: 'Topplate.glb',     color: 0xc8c8cc, desc: 'Deckplatte' },
-    { name: 'Connection',  file: 'Connection.glb',   color: 0x70707a, desc: 'Verbinder (×4)' },
-    { name: 'Gear',        file: 'Gear.glb',         color: 0xc73420, desc: 'Antriebszahnrad' },
-    { name: 'Knob',        file: 'Knob.glb',         color: 0x36363c, desc: 'Drehknopf' },
-  ];
-
-  class MarbleViewer {
-    constructor(container) {
-      this.container = container;
-      this.loader = document.getElementById('marbleLoader');
-      this.titleEl = document.getElementById('marbleTitle');
-      this.statusEl = document.getElementById('marbleStatus');
-      this.rotEl = document.getElementById('marbleRot');
-      this.partsEl = document.getElementById('marbleParts');
-
-      this.scene = new THREE.Scene();
-      this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 5000);
-      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(this.renderer.domElement);
-
-      this.ambient = new THREE.AmbientLight(0xffffff, 0.45);
-      this.scene.add(this.ambient);
-      this.key = new THREE.DirectionalLight(0xffffff, 0.85);
-      this.key.position.set(3, 5, 4);
-      this.scene.add(this.key);
-      this.fill = new THREE.DirectionalLight(0xE63312, 0.18);
-      this.fill.position.set(-4, 1, -3);
-      this.scene.add(this.fill);
-      this.rim = new THREE.DirectionalLight(0xffffff, 0.35);
-      this.rim.position.set(0, -3, -3);
-      this.scene.add(this.rim);
-
-      this.modelGroup = new THREE.Group();
-      this.scene.add(this.modelGroup);
-
-      this.assemblyParts = [];
-      this.singlePart = null;
-      this.assembledScene = null;
-      this.mode = 'assembly';
-
-      this.setupControls();
-      this.setupResize();
-      this.animate = this.animate.bind(this);
-      this.animate();
-      this.loadAssembly();
-    }
-
-    setupControls() {
-      this.isDragging = false;
-      this.prevX = 0; this.prevY = 0;
-      this.rotX = -0.5; this.rotY = 0.4;
-      this.targetRotX = this.rotX;
-      this.targetRotY = this.rotY;
-      this.autoRotate = true;
-      this.zoom = 1.0;
-      this.targetZoom = 1.0;
-      this.cameraDist = 1.0;
-
-      this.container.addEventListener('pointerdown', (e) => {
-        this.isDragging = true;
-        this.autoRotate = false;
-        this.prevX = e.clientX; this.prevY = e.clientY;
-      });
-      window.addEventListener('pointermove', (e) => {
-        if (!this.isDragging) return;
-        this.targetRotY += (e.clientX - this.prevX) * 0.008;
-        this.targetRotX += (e.clientY - this.prevY) * 0.008;
-        this.targetRotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, this.targetRotX));
-        this.prevX = e.clientX; this.prevY = e.clientY;
-      });
-      window.addEventListener('pointerup', () => {
-        if (this.isDragging) {
-          this.isDragging = false;
-          setTimeout(() => { this.autoRotate = true; }, 2500);
-        }
-      });
-      this.container.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        this.targetZoom += e.deltaY * 0.0012;
-        this.targetZoom = Math.max(0.5, Math.min(2.5, this.targetZoom));
-      }, { passive: false });
-    }
-
-    setupResize() {
-      const resize = () => {
-        const w = this.container.clientWidth;
-        const h = this.container.clientHeight;
-        this.renderer.setSize(w, h, false);
-        this.camera.aspect = w / h;
-        this.camera.updateProjectionMatrix();
-      };
-      resize();
-      new ResizeObserver(resize).observe(this.container);
-    }
-
-    fitCameraToObject(object, padding = 1.5) {
-      const box = new THREE.Box3().setFromObject(object);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      object.position.sub(center);
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const fov = this.camera.fov * (Math.PI / 180);
-      this.cameraDist = (maxDim / 2 / Math.tan(fov / 2)) * padding;
-    }
-
-    loadAssembly() {
-      const loader = new THREE.GLTFLoader();
-      loader.load('assets/Marble_Run_Assembly.glb', (gltf) => {
-        while (this.modelGroup.children.length) this.modelGroup.remove(this.modelGroup.children[0]);
-        this.assemblyParts = [];
-        gltf.scene.traverse((child) => {
-          if (child.isMesh) {
-            this.assemblyParts.push({
-              mesh: child,
-              centerOffset: null
-            });
-          }
-        });
-        this.modelGroup.add(gltf.scene);
-        this.assembledScene = gltf.scene;
-        this.fitCameraToObject(gltf.scene);
-
-        gltf.scene.updateMatrixWorld(true);
-        this.assemblyParts.forEach(p => {
-          const box = new THREE.Box3().setFromObject(p.mesh);
-          const c = box.getCenter(new THREE.Vector3());
-          // Convert world-space center to local space relative to the group
-          c.applyMatrix4(new THREE.Matrix4().copy(this.modelGroup.matrixWorld).invert());
-          p.centerOffset = c.clone();
-        });
-
-        this.loader.classList.add('hidden');
-        this.statusEl.textContent = 'READY';
-        this.statusEl.classList.remove('loading');
-      },
-      (progress) => {
-        if (progress.total) {
-          const pct = Math.round((progress.loaded / progress.total) * 100);
-          this.statusEl.textContent = `LOADING ${pct}%`;
-        }
-      },
-      (err) => {
-        console.error(err);
-        this.statusEl.textContent = 'ERROR';
-      });
-    }
-
-    setMode(mode) {
-      this.mode = mode;
-      if (mode === 'assembly' || mode === 'exploded') {
-        if (this.singlePart) {
-          this.modelGroup.remove(this.singlePart);
-          this.singlePart = null;
-        }
-        if (this.assembledScene && !this.assembledScene.parent) {
-          this.modelGroup.add(this.assembledScene);
-          this.fitCameraToObject(this.assembledScene);
-        }
-        this.titleEl.textContent = mode === 'exploded'
-          ? 'INFINITE_MARBLE_RUN.GLB · EXPLODED'
-          : 'INFINITE_MARBLE_RUN.GLB';
-        this.partsEl.textContent = '19 PARTS';
-      }
-    }
-
-    loadSinglePart(partIndex) {
-      const info = PARTS_INFO[partIndex];
-      this.loader.classList.remove('hidden');
-      this.statusEl.textContent = 'LOADING…';
-      this.statusEl.classList.add('loading');
-
-      if (this.assembledScene && this.assembledScene.parent) {
-        this.modelGroup.remove(this.assembledScene);
-      }
-      if (this.singlePart) {
-        this.modelGroup.remove(this.singlePart);
-        this.singlePart = null;
-      }
-
-      const loader = new THREE.GLTFLoader();
-      loader.load(`assets/${info.file}`, (gltf) => {
-        this.singlePart = gltf.scene;
-        this.modelGroup.add(this.singlePart);
-        this.fitCameraToObject(this.singlePart);
-        this.loader.classList.add('hidden');
-        this.statusEl.textContent = 'READY';
-        this.statusEl.classList.remove('loading');
-        this.titleEl.textContent = `${info.name.toUpperCase()}.GLB`;
-        this.partsEl.textContent = info.desc.toUpperCase();
-      });
-    }
-
-    updateTheme(theme) {
-      if (theme === 'light') {
-        this.ambient.intensity = 0.6;
-        this.key.intensity = 0.9;
-      } else {
-        this.ambient.intensity = 0.45;
-        this.key.intensity = 0.85;
-      }
-    }
-
-    animate() {
-      requestAnimationFrame(this.animate);
-
-      if (this.autoRotate) this.targetRotY += 0.0025;
-      this.rotX += (this.targetRotX - this.rotX) * 0.08;
-      this.rotY += (this.targetRotY - this.rotY) * 0.08;
-      this.zoom += (this.targetZoom - this.zoom) * 0.08;
-
-      this.modelGroup.rotation.x = this.rotX;
-      this.modelGroup.rotation.y = this.rotY;
-
-      const dist = this.cameraDist * this.zoom;
-      this.camera.position.set(0, 0, dist);
-      this.camera.lookAt(0, 0, 0);
-
-      // Explosion: push parts outward from assembly center
-      if (this.assemblyParts.length && this.assembledScene && this.assembledScene.parent) {
-        const factor = this.mode === 'exploded' ? 0.6 : 0;
-        this.assemblyParts.forEach(p => {
-          const target = p.centerOffset.clone().multiplyScalar(factor);
-          p.mesh.position.lerp(target, 0.08);
-        });
-      }
-
-      if (this.rotEl) {
-        const deg = Math.round((this.rotY * 180 / Math.PI) % 360);
-        this.rotEl.textContent = `ROT ${deg}°`;
-      }
-
-      this.renderer.render(this.scene, this.camera);
-    }
-  }
-
-  const marbleViewer = new MarbleViewer(document.getElementById('marbleViewer'));
-  allViewers.push(marbleViewer);
-
-  document.querySelectorAll('.control-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.dataset.mode;
-      document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
-      if (mode === 'parts') {
-        const firstCard = document.querySelector('.part-card');
-        if (firstCard) firstCard.click();
-      } else {
-        marbleViewer.setMode(mode);
-      }
-      document.getElementById('partsGrid').style.display = mode === 'parts' ? 'grid' : 'none';
-    });
-  });
-
-  const partsGrid = document.getElementById('partsGrid');
-  partsGrid.style.display = 'none';
-  PARTS_INFO.forEach((p, i) => {
-    const card = document.createElement('button');
-    card.className = 'part-card';
-    const colorHex = '#' + p.color.toString(16).padStart(6, '0');
-    card.innerHTML = `
-      <div class="part-color" style="background: ${colorHex}"></div>
-      <div class="part-num">PART // ${String(i+1).padStart(2,'0')}</div>
-      <div class="part-name">${p.name.replace('_', ' ')}</div>
-      <div class="part-tris">${p.desc}</div>
-    `;
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      marbleViewer.loadSinglePart(i);
-    });
-    partsGrid.appendChild(card);
-  });
-
-  // PLACEHOLDER VIEWERS
-  function createPlaceholderGeometry(index) {
-    switch (index) {
-      case 1: return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
-      case 2: {
+  // Non-interactive mini card viewers (auto-rotate only)
+  function makeCardGeo(type) {
+    switch (type) {
+      case 'knot0': return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
+      case 'knot1': return new THREE.TorusKnotGeometry(0.65, 0.20, 128, 24, 3, 4);
+      case 'bracket': {
         const shape = new THREE.Shape();
         shape.moveTo(-1, -0.8); shape.lineTo(1, -0.8); shape.lineTo(1, -0.4);
         shape.lineTo(-0.4, -0.4); shape.lineTo(-0.4, 0.8); shape.lineTo(-1, 0.8); shape.lineTo(-1, -0.8);
@@ -1079,108 +693,69 @@
         const h3 = new THREE.Path(); h3.absarc(-0.7, 0.5, 0.08, 0, Math.PI * 2, false); shape.holes.push(h3);
         return new THREE.ExtrudeGeometry(shape, { depth: 0.3, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02, bevelSegments: 3 });
       }
-      case 3: {
+      case 'gear': {
         const shape = new THREE.Shape();
         const teeth = 18, outerR = 1.0, innerR = 0.85;
         for (let i = 0; i <= teeth * 2; i++) {
           const a = (i / (teeth * 2)) * Math.PI * 2;
           const r = i % 2 === 0 ? outerR : innerR;
-          if (i === 0) shape.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-          else shape.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+          i === 0 ? shape.moveTo(Math.cos(a)*r, Math.sin(a)*r) : shape.lineTo(Math.cos(a)*r, Math.sin(a)*r);
         }
         const hub = new THREE.Path(); hub.absarc(0, 0, 0.25, 0, Math.PI * 2, false); shape.holes.push(hub);
         return new THREE.ExtrudeGeometry(shape, { depth: 0.35, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 3 });
       }
-      case 4: return new THREE.IcosahedronGeometry(1.0, 1);
-      default: return new THREE.BoxGeometry(1.5, 1, 0.8);
+      case 'ico': return new THREE.IcosahedronGeometry(1.0, 1);
     }
   }
 
-  function initPlaceholderViewer(container, index) {
+  const CARDS = [
+    { id: 'card0', geo: 'knot0', color: 0xc73420 },
+    { id: 'card1', geo: 'knot1', color: 0x9a9aa0 },
+    { id: 'card2', geo: 'bracket', color: 0x9a9aa0 },
+    { id: 'card3', geo: 'gear', color: 0x9a9aa0 },
+    { id: 'card4', geo: 'ico', color: 0x9a9aa0 },
+  ];
+
+  CARDS.forEach(({ id, geo, color }) => {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-    camera.position.set(2.5, 1.8, 3.2);
-    camera.lookAt(0, 0, 0);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
     const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(3, 4, 5); scene.add(key);
     const fill = new THREE.DirectionalLight(0xE63312, 0.25); fill.position.set(-3, 1, -2); scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffffff, 0.3); rim.position.set(0, -3, -3); scene.add(rim);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.25); rim.position.set(0, -3, -3); scene.add(rim);
 
-    const geo = createPlaceholderGeometry(index);
-    geo.center();
-    const mat = new THREE.MeshStandardMaterial({ color: 0x9a9aa0, metalness: 0.6, roughness: 0.35 });
-    const mesh = new THREE.Mesh(geo, mat);
+    const g = makeCardGeo(geo);
+    g.center();
+    const mat = new THREE.MeshStandardMaterial({ color, metalness: 0.65, roughness: 0.3 });
+    const mesh = new THREE.Mesh(g, mat);
     scene.add(mesh);
 
     function resize() {
-      const w = container.clientWidth, h = container.clientHeight;
+      const w = canvas.clientWidth, h = canvas.clientHeight;
       renderer.setSize(w, h, false);
-      camera.aspect = w / h; camera.updateProjectionMatrix();
-    }
-    resize();
-    new ResizeObserver(resize).observe(container);
-
-    let isDragging = false, prevX = 0, prevY = 0;
-    let rotX = 0.3, rotY = 0.5, targetRotX = rotX, targetRotY = rotY;
-    let autoRotate = true, zoom = 1.0, targetZoom = 1.0;
-
-    container.addEventListener('pointerdown', (e) => {
-      isDragging = true; autoRotate = false; prevX = e.clientX; prevY = e.clientY;
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      targetRotY += (e.clientX - prevX) * 0.008;
-      targetRotX += (e.clientY - prevY) * 0.008;
-      targetRotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, targetRotX));
-      prevX = e.clientX; prevY = e.clientY;
-    });
-    window.addEventListener('pointerup', () => {
-      if (isDragging) { isDragging = false; setTimeout(() => { autoRotate = true; }, 2500); }
-    });
-    container.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      targetZoom += e.deltaY * 0.0015;
-      targetZoom = Math.max(0.6, Math.min(2.0, targetZoom));
-    }, { passive: false });
-
-    const rotLabel = container.querySelector('.rotLabel');
-
-    function animate() {
-      requestAnimationFrame(animate);
-      if (autoRotate) targetRotY += 0.003;
-      rotX += (targetRotX - rotX) * 0.08;
-      rotY += (targetRotY - rotY) * 0.08;
-      zoom += (targetZoom - zoom) * 0.08;
-      mesh.rotation.x = rotX;
-      mesh.rotation.y = rotY;
-      const dist = 4.2 * zoom;
-      camera.position.set(dist * 0.6, dist * 0.4, dist * 0.75);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      camera.position.set(0, 0.3, 3.5);
       camera.lookAt(0, 0, 0);
-      if (rotLabel) rotLabel.textContent = `ROT ${Math.round((rotY * 180 / Math.PI) % 360)}°`;
-      renderer.render(scene, camera);
     }
-    animate();
+    new ResizeObserver(resize).observe(canvas);
+    resize();
 
-    return {
-      updateTheme(theme) {
-        if (theme === 'light') {
-          mat.color.setHex(0xc4c4c8); mat.metalness = 0.5; mat.roughness = 0.45;
-        } else {
-          mat.color.setHex(0x9a9aa0); mat.metalness = 0.6; mat.roughness = 0.35;
-        }
-      }
-    };
-  }
-
-  document.querySelectorAll('.model-viewer[data-placeholder]').forEach((el) => {
-    const idx = parseInt(el.dataset.placeholder);
-    allViewers.push(initPlaceholderViewer(el, idx));
+    let ry = Math.random() * Math.PI * 2;
+    (function animate() {
+      requestAnimationFrame(animate);
+      ry += 0.006;
+      mesh.rotation.y = ry;
+      mesh.rotation.x = Math.sin(ry * 0.4) * 0.22;
+      renderer.render(scene, camera);
+    })();
   });
 </script>
-
 </body>
 </html>

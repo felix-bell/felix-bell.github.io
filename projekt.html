@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Projekt — Felix Portfolio</title>
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --accent: #E63312;
+    --accent-soft: rgba(230, 51, 18, 0.08);
+    --accent-glow: rgba(230, 51, 18, 0.22);
+    --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-fast: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    --font-display: 'Inter Tight', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #0a0a0b; --bg-elevated: #131316; --bg-card: #16161a;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --text: #f5f5f7; --text-muted: #8a8a93; --text-subtle: #4a4a52;
+    --grid-line: rgba(255,255,255,0.03);
+  }
+  [data-theme="light"] {
+    --bg: #fafaf8; --bg-elevated: #ffffff; --bg-card: #ffffff;
+    --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.16);
+    --text: #0a0a0b; --text-muted: #5a5a63; --text-subtle: #a0a0a8;
+    --grid-line: rgba(0,0,0,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-display); background: var(--bg); color: var(--text);
+    line-height: 1.5; overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition);
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+  .logo-mark {
+    display: flex; align-items: center; gap: 0.85rem;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.1em; color: var(--text);
+    text-decoration: none; text-transform: uppercase;
+  }
+  .logo-mark img { height: 36px; width: auto; display: none; }
+  [data-theme="dark"] .logo-mark .logo-dark { display: block; }
+  [data-theme="light"] .logo-mark .logo-light { display: block; }
+  .logo-mark .divider { width: 1px; height: 18px; background: var(--border-strong); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .back-link {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-muted); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    transition: color var(--transition-fast);
+  }
+  .back-link:hover { color: var(--accent); }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--border);
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); transition: all var(--transition-fast);
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  [data-theme="dark"] .icon-sun { display: block; }
+  [data-theme="dark"] .icon-moon { display: none; }
+  [data-theme="light"] .icon-sun { display: none; }
+  [data-theme="light"] .icon-moon { display: block; }
+
+  main { position: relative; z-index: 1; }
+
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+
+  .project-hero {
+    padding: 10rem 2.5rem 4rem;
+    max-width: 1400px; margin: 0 auto;
+  }
+  .project-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 500; letter-spacing: -0.04em;
+    line-height: 1; margin: 1rem 0 1.5rem;
+  }
+  .project-hero h1 em { color: var(--accent); font-style: italic; font-weight: 400; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .tag {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--text-muted); padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border); border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+  .project-meta-grid {
+    display: grid; grid-template-columns: 2fr 1fr;
+    gap: 4rem; align-items: start;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+  }
+  .project-description { font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; }
+  .project-specs-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; }
+  .spec-row {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;
+  }
+  .spec-row .key { color: var(--text-muted); }
+  .spec-row .val { color: var(--text); }
+
+  .viewer-section {
+    padding: 3rem 2.5rem 6rem;
+    max-width: 1400px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .model-viewer {
+    position: relative; aspect-ratio: 4 / 3;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden; max-width: 800px;
+    transition: border-color var(--transition);
+  }
+  .model-viewer canvas { display: block; width: 100%; height: 100%; }
+  .viewer-corners { position: absolute; inset: 0; pointer-events: none; }
+  .corner {
+    position: absolute; width: 16px; height: 16px;
+    border-color: var(--accent); border-style: solid; border-width: 0;
+  }
+  .corner.tl { top: 12px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
+  .corner.tr { top: 12px; right: 12px; border-top-width: 1px; border-right-width: 1px; }
+  .corner.bl { bottom: 12px; left: 12px; border-bottom-width: 1px; border-left-width: 1px; }
+  .corner.br { bottom: 12px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
+  .viewer-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 1rem;
+  }
+  .viewer-meta {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.65rem;
+    color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  .nav-projects {
+    padding: 0 2.5rem 6rem;
+    max-width: 1400px; margin: 0 auto;
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .nav-btn {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.6rem 1.25rem; border-radius: 100px;
+    text-decoration: none; transition: all var(--transition-fast);
+    border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn.prev::before { content: '← '; }
+  .nav-btn.next::after { content: ' →'; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 2.5rem;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--text-muted); letter-spacing: 0.05em;
+    flex-wrap: wrap; gap: 1rem;
+    position: relative; z-index: 1;
+  }
+  footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
+  footer .footer-logo img { height: 18px; display: none; }
+  [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
+  [data-theme="light"] footer .footer-logo .logo-light { display: block; }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .logo-mark img { height: 30px; }
+    .logo-mark .divider, .logo-mark .logo-text { display: none; }
+    .project-hero { padding: 8rem 1.5rem 3rem; }
+    .project-meta-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .viewer-section, .nav-projects { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav id="nav">
+  <a href="index.html" class="logo-mark">
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
+    <span class="divider"></span>
+    <span class="logo-text">F3_lix / Portfolio</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Theme umschalten">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="project-hero" id="projectHero">
+    <div class="section-label reveal" id="projectLabel">PROJEKT // 002</div>
+    <h1 class="reveal" id="projectTitle">—</h1>
+    <div class="project-tags reveal" id="projectTags"></div>
+    <div class="project-meta-grid reveal">
+      <p class="project-description" id="projectDesc"></p>
+      <div class="project-specs-hero" id="projectSpecs"></div>
+    </div>
+  </div>
+
+  <div class="viewer-section">
+    <div class="model-viewer" id="projectViewer">
+      <div class="viewer-corners">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+      </div>
+      <div class="viewer-overlay">
+        <div class="viewer-meta">
+          <span id="viewerTitle">MODEL</span>
+          <span id="viewerStatus">READY</span>
+        </div>
+        <div class="viewer-meta">
+          <span id="viewerRot">ROT 0°</span>
+          <span id="viewerFormat"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav-projects" id="projectNav"></nav>
+</main>
+
+<footer>
+  <div class="footer-logo">
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
+    <span>© 2026 — F3_lix</span>
+  </div>
+  <span id="footerTitle">Projekt</span>
+  <span>v2.0.0</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+  const PROJECTS = {
+    2: {
+      number: '002',
+      title: 'Funktionsbauteil',
+      titleEm: 'Prototyp',
+      tags: ['Fusion 360', 'Reverse Engineering', '3D-Druck'],
+      desc: 'Komplexes Funktionsteil mit organisch geformter Geometrie, ursprünglich rekonstruiert aus einer STL-Vorlage. Iterative Optimierung der Topologie für 3D-Druck-Eignung. Jede Iteration brachte klarere Geometrie und bessere Druckbarkeit.',
+      specs: [
+        ['Format', 'STL'],
+        ['Polys', '~48k'],
+        ['Status', 'Iteration v3'],
+        ['Jahr', '2025'],
+      ],
+      geoType: 'torusknot',
+      format: 'STL',
+    },
+    3: {
+      number: '003',
+      title: 'Halterung &',
+      titleEm: 'Montagebaugruppe',
+      tags: ['Fusion 360', 'Toleranzanalyse', 'FEM'],
+      desc: 'Parametrische Halterungs-Konstruktion mit toleranzgerechten Passungen und durchgängiger Maßkette. Konzipiert für robusten Einsatz unter mechanischer Last. Alle Schnittstellen sind auf Austauschbarkeit ausgelegt.',
+      specs: [
+        ['Format', 'STEP'],
+        ['Bauteile', '14'],
+        ['Status', 'Fertig'],
+        ['Jahr', '2024'],
+      ],
+      geoType: 'bracket',
+      format: 'STEP',
+    },
+    4: {
+      number: '004',
+      title: 'Getriebe-',
+      titleEm: 'Konzeptstudie',
+      tags: ['CAD', 'Mechanik', 'Konzept'],
+      desc: 'Konzeptionelle Untersuchung eines kompakten Getriebes mit Fokus auf minimalem Bauraum und sauberer Übersetzungsgeometrie. Modellierung sämtlicher Verzahnungen aus Konstruktionsregeln abgeleitet.',
+      specs: [
+        ['Format', 'STEP'],
+        ['Bauteile', '8'],
+        ['Status', 'Konzept'],
+        ['Jahr', '2024'],
+      ],
+      geoType: 'gear',
+      format: 'STEP',
+    },
+    5: {
+      number: '005',
+      title: 'Strukturbauteil',
+      titleEm: 'leichtbaugerecht',
+      tags: ['Topologie-Opt.', 'Leichtbau', 'Simulation'],
+      desc: 'Topologie-optimiertes Strukturbauteil mit reduzierter Masse bei erhaltener Steifigkeit. Ergebnis einer iterativen Auslegung zwischen FEM-Simulation und konstruktiver Umsetzung. Massereduktion von 42 % gegenüber dem Ausgangsentwurf.',
+      specs: [
+        ['Format', 'STEP'],
+        ['Massereduktion', '−42%'],
+        ['Status', 'Validiert'],
+        ['Jahr', '2026'],
+      ],
+      geoType: 'ico',
+      format: 'STEP',
+    },
+  };
+
+  // Read project ID from URL
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id')) || 2;
+  const p = PROJECTS[id] || PROJECTS[2];
+
+  // Populate page
+  document.title = `${p.title} ${p.titleEm} — Felix Portfolio`;
+  document.getElementById('projectLabel').textContent = `PROJEKT // ${p.number}`;
+  document.getElementById('projectTitle').innerHTML = `${p.title} <em>${p.titleEm}</em>`;
+  document.getElementById('projectDesc').textContent = p.desc;
+  document.getElementById('footerTitle').textContent = `Projekt ${p.number}`;
+  document.getElementById('viewerTitle').textContent = `MODEL.${p.number}`;
+  document.getElementById('viewerFormat').textContent = p.format;
+
+  const tagsEl = document.getElementById('projectTags');
+  p.tags.forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.textContent = t;
+    tagsEl.appendChild(span);
+  });
+
+  const specsEl = document.getElementById('projectSpecs');
+  p.specs.forEach(([k, v]) => {
+    const row = document.createElement('div');
+    row.className = 'spec-row';
+    row.innerHTML = `<span class="key">${k}</span><span class="val">${v}</span>`;
+    specsEl.appendChild(row);
+  });
+
+  // Prev / Next navigation
+  const navEl = document.getElementById('projectNav');
+  const ids = [2, 3, 4, 5];
+  const idx = ids.indexOf(id);
+  if (idx > 0) {
+    const prev = document.createElement('a');
+    prev.href = `projekt.html?id=${ids[idx - 1]}`;
+    prev.className = 'nav-btn prev';
+    prev.textContent = `Projekt ${String(ids[idx-1]).padStart(3,'0')}`;
+    navEl.appendChild(prev);
+  }
+  const backBtn = document.createElement('a');
+  backBtn.href = 'index.html';
+  backBtn.className = 'nav-btn';
+  backBtn.textContent = 'Zur Übersicht';
+  navEl.appendChild(backBtn);
+  if (idx < ids.length - 1) {
+    const next = document.createElement('a');
+    next.href = `projekt.html?id=${ids[idx + 1]}`;
+    next.className = 'nav-btn next';
+    next.textContent = `Projekt ${String(ids[idx+1]).padStart(3,'0')}`;
+    navEl.appendChild(next);
+  }
+
+  // Theme
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // 3D Viewer
+  function makeGeo(type) {
+    switch (type) {
+      case 'torusknot': return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
+      case 'bracket': {
+        const shape = new THREE.Shape();
+        shape.moveTo(-1,-0.8); shape.lineTo(1,-0.8); shape.lineTo(1,-0.4);
+        shape.lineTo(-0.4,-0.4); shape.lineTo(-0.4,0.8); shape.lineTo(-1,0.8); shape.lineTo(-1,-0.8);
+        const h1 = new THREE.Path(); h1.absarc(-0.7,-0.6,0.08,0,Math.PI*2,false); shape.holes.push(h1);
+        const h2 = new THREE.Path(); h2.absarc(0.6,-0.6,0.08,0,Math.PI*2,false); shape.holes.push(h2);
+        const h3 = new THREE.Path(); h3.absarc(-0.7,0.5,0.08,0,Math.PI*2,false); shape.holes.push(h3);
+        return new THREE.ExtrudeGeometry(shape, { depth:0.3, bevelEnabled:true, bevelSize:0.02, bevelThickness:0.02, bevelSegments:3 });
+      }
+      case 'gear': {
+        const shape = new THREE.Shape();
+        const teeth = 18, outerR = 1.0, innerR = 0.85;
+        for (let i = 0; i <= teeth * 2; i++) {
+          const a = (i / (teeth * 2)) * Math.PI * 2;
+          const r = i % 2 === 0 ? outerR : innerR;
+          i === 0 ? shape.moveTo(Math.cos(a)*r, Math.sin(a)*r) : shape.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+        }
+        const hub = new THREE.Path(); hub.absarc(0,0,0.25,0,Math.PI*2,false); shape.holes.push(hub);
+        return new THREE.ExtrudeGeometry(shape, { depth:0.35, bevelEnabled:true, bevelSize:0.03, bevelThickness:0.03, bevelSegments:3 });
+      }
+      case 'ico': return new THREE.IcosahedronGeometry(1.0, 1);
+      default: return new THREE.BoxGeometry(1.5, 1, 0.8);
+    }
+  }
+
+  const container = document.getElementById('projectViewer');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(3,4,5); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xE63312, 0.25); fill.position.set(-3,1,-2); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.3); rim.position.set(0,-3,-3); scene.add(rim);
+
+  const geo = makeGeo(p.geoType); geo.center();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x9a9aa0, metalness: 0.6, roughness: 0.35 });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  function resize() {
+    const w = container.clientWidth, h = container.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    camera.position.set(2.5, 1.8, 3.2); camera.lookAt(0, 0, 0);
+  }
+  new ResizeObserver(resize).observe(container);
+  resize();
+
+  let isDragging = false, prevX = 0, prevY = 0;
+  let rotX = 0.3, rotY = 0.5, targetRotX = rotX, targetRotY = rotY;
+  let autoRotate = true;
+  const rotLabel = document.getElementById('viewerRot');
+
+  container.addEventListener('pointerdown', (e) => {
+    isDragging = true; autoRotate = false; prevX = e.clientX; prevY = e.clientY;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    targetRotY += (e.clientX - prevX) * 0.008;
+    targetRotX += (e.clientY - prevY) * 0.008;
+    targetRotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, targetRotX));
+    prevX = e.clientX; prevY = e.clientY;
+  });
+  window.addEventListener('pointerup', () => {
+    if (isDragging) { isDragging = false; setTimeout(() => { autoRotate = true; }, 2000); }
+  });
+
+  (function animate() {
+    requestAnimationFrame(animate);
+    if (autoRotate) targetRotY += 0.004;
+    rotX += (targetRotX - rotX) * 0.08;
+    rotY += (targetRotY - rotY) * 0.08;
+    mesh.rotation.x = rotX; mesh.rotation.y = rotY;
+    const dist = 4.5;
+    camera.position.set(dist*0.6, dist*0.4, dist*0.75);
+    camera.lookAt(0, 0, 0);
+    if (rotLabel) rotLabel.textContent = `ROT ${Math.round((rotY * 180 / Math.PI) % 360)}°`;
+    renderer.render(scene, camera);
+  })();
+</script>
+</body>
+</html>

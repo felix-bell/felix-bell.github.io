@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Infinite Marble Run — Felix Portfolio</title>
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="preload" href="assets/Marble_Run_Assembly.glb" as="fetch" crossorigin />
+<script>
+  // Start GLB download immediately — parallel to Three.js CDN loading
+  window._glbPrefetch = fetch('assets/Marble_Run_Assembly.glb').then(r => r.arrayBuffer());
+</script>
+<style>
+  :root {
+    --accent: #E63312;
+    --accent-soft: rgba(230, 51, 18, 0.08);
+    --accent-glow: rgba(230, 51, 18, 0.22);
+    --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-fast: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    --font-display: 'Inter Tight', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #0a0a0b;
+    --bg-elevated: #131316;
+    --bg-card: #16161a;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
+    --text: #f5f5f7;
+    --text-muted: #8a8a93;
+    --text-subtle: #4a4a52;
+    --grid-line: rgba(255,255,255,0.03);
+  }
+  [data-theme="light"] {
+    --bg: #fafaf8;
+    --bg-elevated: #ffffff;
+    --bg-card: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.16);
+    --text: #0a0a0b;
+    --text-muted: #5a5a63;
+    --text-subtle: #a0a0a8;
+    --grid-line: rgba(0,0,0,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--transition);
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+  .logo-mark {
+    display: flex; align-items: center; gap: 0.85rem;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.1em; color: var(--text);
+    text-decoration: none; text-transform: uppercase;
+  }
+  .logo-mark img { height: 36px; width: auto; display: none; }
+  [data-theme="dark"] .logo-mark .logo-dark { display: block; }
+  [data-theme="light"] .logo-mark .logo-light { display: block; }
+  .logo-mark .divider { width: 1px; height: 18px; background: var(--border-strong); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .back-link {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--text-muted); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: color var(--transition-fast);
+  }
+  .back-link:hover { color: var(--accent); }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--border);
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); transition: all var(--transition-fast);
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  [data-theme="dark"] .icon-sun { display: block; }
+  [data-theme="dark"] .icon-moon { display: none; }
+  [data-theme="light"] .icon-sun { display: none; }
+  [data-theme="light"] .icon-moon { display: block; }
+
+  main { position: relative; z-index: 1; }
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+
+  /* PROJECT HERO */
+  .project-hero {
+    padding: 10rem 2.5rem 4rem;
+    max-width: 1400px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .project-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 500; letter-spacing: -0.04em;
+    line-height: 0.95; margin: 1rem 0 2rem;
+  }
+  .project-hero h1 em { color: var(--accent); font-style: italic; font-weight: 400; }
+  .project-meta-grid {
+    display: grid; grid-template-columns: 2fr 1fr;
+    gap: 4rem; align-items: start; margin-top: 3rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+  }
+  .project-description {
+    font-size: 1.05rem; color: var(--text-muted);
+    line-height: 1.7; max-width: 600px;
+  }
+  .project-specs-hero {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem;
+  }
+  .spec-row {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;
+  }
+  .spec-row .key { color: var(--text-muted); }
+  .spec-row .val { color: var(--text); }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .tag {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--text-muted); padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border); border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+
+  /* 3D VIEWER */
+  .viewer-section {
+    padding: 0 2.5rem 6rem;
+    max-width: 1400px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .viewer-controls-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;
+  }
+  .control-group {
+    display: flex; background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 100px; padding: 4px;
+  }
+  .control-btn {
+    background: transparent; border: none; color: var(--text-muted);
+    padding: 0.5rem 1rem; font-family: var(--font-mono);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer; border-radius: 100px;
+    transition: all var(--transition-fast);
+  }
+  .control-btn:hover { color: var(--text); }
+  .control-btn.active { background: var(--accent); color: #fff; }
+
+  .interact-btn {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.5rem 1.1rem; font-family: var(--font-mono);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer; border-radius: 100px;
+    transition: all var(--transition-fast);
+  }
+  .interact-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .interact-btn.active {
+    background: var(--accent-soft); border-color: var(--accent);
+    color: var(--accent);
+  }
+  .interact-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  .model-viewer {
+    position: relative; aspect-ratio: 16 / 9;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden;
+    transition: border-color var(--transition);
+  }
+  .model-viewer.interactive {
+    border-color: var(--accent);
+    cursor: grab;
+  }
+  .model-viewer.interactive:active { cursor: grabbing; }
+  .model-viewer canvas { display: block; width: 100%; height: 100%; }
+
+  .viewer-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 1rem;
+  }
+  .viewer-corners { position: absolute; inset: 0; }
+  .corner {
+    position: absolute; width: 16px; height: 16px;
+    border-color: var(--accent); border-style: solid; border-width: 0;
+  }
+  .corner.tl { top: 12px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
+  .corner.tr { top: 12px; right: 12px; border-top-width: 1px; border-right-width: 1px; }
+  .corner.bl { bottom: 12px; left: 12px; border-bottom-width: 1px; border-left-width: 1px; }
+  .corner.br { bottom: 12px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
+  .viewer-meta {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.65rem;
+    color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .viewer-meta .loading { color: var(--accent); }
+
+  .interact-hint {
+    position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 0.68rem;
+    color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+    background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+    padding: 0.4rem 0.9rem; border-radius: 100px; border: 1px solid var(--border);
+    white-space: nowrap;
+    opacity: 0; transition: opacity var(--transition);
+    pointer-events: none;
+  }
+  .model-viewer.interactive .interact-hint { opacity: 1; }
+
+  .viewer-loader {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-card); z-index: 5;
+    transition: opacity var(--transition);
+  }
+  .viewer-loader.hidden { opacity: 0; pointer-events: none; }
+  .loader-dots { display: flex; gap: 6px; }
+  .loader-dots span {
+    width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    animation: loaderPulse 1.4s ease-in-out infinite;
+  }
+  .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes loaderPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.4); opacity: 1; }
+  }
+
+  /* PARTS GRID */
+  .parts-section {
+    padding: 0 2.5rem 6rem;
+    max-width: 1400px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .marble-controls {
+    display: flex; justify-content: flex-start; gap: 0.5rem;
+    margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .parts-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem; margin-top: 1.5rem;
+  }
+  .part-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1rem; cursor: pointer;
+    text-align: left; transition: all var(--transition-fast);
+    font-family: var(--font-mono); color: var(--text);
+    position: relative; overflow: hidden;
+  }
+  .part-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .part-card.active { border-color: var(--accent); background: var(--accent-soft); }
+  .part-card .part-num { font-size: 0.65rem; color: var(--text-subtle); letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+  .part-card .part-name { font-size: 0.85rem; font-weight: 500; color: var(--text); margin-bottom: 0.4rem; }
+  .part-card .part-tris { font-size: 0.65rem; color: var(--text-muted); }
+  .part-card .part-color {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 8px; height: 8px; border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 2.5rem;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--text-muted); letter-spacing: 0.05em;
+    flex-wrap: wrap; gap: 1rem;
+    position: relative; z-index: 1;
+  }
+  footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
+  footer .footer-logo img { height: 18px; display: none; }
+  [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
+  [data-theme="light"] footer .footer-logo .logo-light { display: block; }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .logo-mark img { height: 30px; }
+    .logo-mark .divider, .logo-mark .logo-text { display: none; }
+    .project-hero { padding: 8rem 1.5rem 3rem; }
+    .project-meta-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .viewer-section, .parts-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav id="nav">
+  <a href="index.html" class="logo-mark">
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
+    <span class="divider"></span>
+    <span class="logo-text">F3_lix / Portfolio</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="back-link">← Zurück zur Übersicht</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Theme umschalten">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="project-hero">
+    <div class="section-label reveal">PROJEKT // 001 — FEATURED</div>
+    <h1 class="reveal">Infinite <em>Marble Run</em></h1>
+    <div class="project-tags reveal">
+      <span class="tag">Bambu Studio</span>
+      <span class="tag">3D-Druck</span>
+      <span class="tag">Mechatronik</span>
+      <span class="tag">DFM</span>
+      <span class="tag">Baugruppe</span>
+    </div>
+    <div class="project-meta-grid reveal">
+      <p class="project-description">
+        Eine vollständig konstruierte, motorisierte Endlos-Kugelbahn mit
+        integrierter LED-Beleuchtung und elektronischer Drehzahlregelung.
+        Aus 13 unterschiedlichen Bauteilen entwickelt — von der mechanischen
+        Lagerung über das Antriebs-Zahnrad bis zum Lichtring. Alle Teile
+        sind druckoptimiert und greifen präzise ineinander.
+      </p>
+      <div class="project-specs-hero">
+        <div class="spec-row"><span class="key">Bauteile</span><span class="val">13 unique</span></div>
+        <div class="spec-row"><span class="key">Instanzen</span><span class="val">19</span></div>
+        <div class="spec-row"><span class="key">Triangles</span><span class="val">~85k</span></div>
+        <div class="spec-row"><span class="key">Status</span><span class="val">Released</span></div>
+        <div class="spec-row"><span class="key">Jahr</span><span class="val">2026</span></div>
+        <div class="spec-row"><span class="key">Format</span><span class="val">3MF · STL</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viewer-section">
+    <div class="viewer-controls-bar">
+      <div class="control-group">
+        <button class="control-btn active" data-mode="assembly">Baugruppe</button>
+        <button class="control-btn" data-mode="exploded">Explosion</button>
+        <button class="control-btn" data-mode="parts">Einzelteile</button>
+      </div>
+      <button class="interact-btn" id="interactBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span id="interactBtnText">Modell steuern</span>
+      </button>
+    </div>
+
+    <div class="model-viewer" id="marbleViewer">
+      <div class="viewer-loader" id="marbleLoader">
+        <div class="loader-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="viewer-corners">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+      </div>
+      <div class="viewer-overlay">
+        <div class="viewer-meta">
+          <span id="marbleTitle">INFINITE_MARBLE_RUN.GLB</span>
+          <span id="marbleStatus" class="loading">LOADING…</span>
+        </div>
+        <div class="viewer-meta">
+          <span id="marbleRot">ROT 0°</span>
+          <span id="marbleParts">19 PARTS</span>
+        </div>
+      </div>
+      <div class="interact-hint">DRAG TO ROTATE · SCROLL TO ZOOM · Klicke LOCK zum Beenden</div>
+    </div>
+  </div>
+
+  <div class="parts-section">
+    <div class="parts-grid" id="partsGrid" style="display:none;"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">
+    <img class="logo-dark" src="assets/logo-dark.png" alt="F3 Logo" />
+    <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
+    <span>© 2026 — F3_lix</span>
+  </div>
+  <span>Infinite Marble Run</span>
+  <span>v2.0.0</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+  // Theme
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const html = document.documentElement;
+    const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    html.dataset.theme = next;
+    viewer && viewer.updateTheme(next);
+  });
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  const PARTS_INFO = [
+    { name: 'Base',        file: 'Base.glb',         color: 0x52525a, desc: 'Hauptgehäuse' },
+    { name: 'Disc',        file: 'Disc.glb',         color: 0xc73420, desc: 'Drehscheibe' },
+    { name: 'Rail',        file: 'Rail.glb',         color: 0x8c8c92, desc: 'Schiene (×4)' },
+    { name: 'Wave',        file: 'Wave.glb',         color: 0x7a7a80, desc: 'Wellenbahn' },
+    { name: 'Ground',      file: 'Ground.glb',       color: 0x484850, desc: 'Bodenplatte' },
+    { name: 'Bracket',     file: 'Bracket.glb',      color: 0x6c6c72, desc: 'Motorhalter' },
+    { name: 'Box_Bracket', file: 'Box_Bracket.glb',  color: 0x6c6c72, desc: 'Akkuhalter' },
+    { name: 'Lightholder', file: 'Lightholder.glb',  color: 0xd8d8dc, desc: 'LED-Aufnahme' },
+    { name: 'Lightring',   file: 'Lightring.glb',    color: 0xfff0c0, desc: 'Lichtring' },
+    { name: 'Topplate',    file: 'Topplate.glb',     color: 0xc8c8cc, desc: 'Deckplatte' },
+    { name: 'Connection',  file: 'Connection.glb',   color: 0x70707a, desc: 'Verbinder (×4)' },
+    { name: 'Gear',        file: 'Gear.glb',         color: 0xc73420, desc: 'Antriebszahnrad' },
+    { name: 'Knob',        file: 'Knob.glb',         color: 0x36363c, desc: 'Drehknopf' },
+  ];
+
+  class MarbleViewer {
+    constructor(container) {
+      this.container = container;
+      this.loader    = document.getElementById('marbleLoader');
+      this.titleEl   = document.getElementById('marbleTitle');
+      this.statusEl  = document.getElementById('marbleStatus');
+      this.rotEl     = document.getElementById('marbleRot');
+      this.partsEl   = document.getElementById('marbleParts');
+
+      this.interactMode = false;
+
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 5000);
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(this.renderer.domElement);
+
+      this.ambient = new THREE.AmbientLight(0xffffff, 0.45);
+      this.scene.add(this.ambient);
+      this.key = new THREE.DirectionalLight(0xffffff, 0.85);
+      this.key.position.set(3, 5, 4);
+      this.scene.add(this.key);
+      this.fill = new THREE.DirectionalLight(0xE63312, 0.18);
+      this.fill.position.set(-4, 1, -3);
+      this.scene.add(this.fill);
+      this.rim = new THREE.DirectionalLight(0xffffff, 0.35);
+      this.rim.position.set(0, -3, -3);
+      this.scene.add(this.rim);
+
+      this.modelGroup = new THREE.Group();
+      this.scene.add(this.modelGroup);
+
+      this.assemblyParts = [];
+      this.singlePart = null;
+      this.assembledScene = null;
+      this.mode = 'assembly';
+
+      this.setupControls();
+      this.setupResize();
+      this.animate = this.animate.bind(this);
+      this.animate();
+      this.loadAssembly();
+    }
+
+    setInteractMode(active) {
+      this.interactMode = active;
+      const btn = document.getElementById('interactBtn');
+      const btnText = document.getElementById('interactBtnText');
+      if (active) {
+        this.container.classList.add('interactive');
+        btn.classList.add('active');
+        btnText.textContent = 'Steuerung sperren';
+        // Change lock icon to unlock
+        btn.querySelector('svg').innerHTML = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
+      } else {
+        this.container.classList.remove('interactive');
+        btn.classList.remove('active');
+        btnText.textContent = 'Modell steuern';
+        btn.querySelector('svg').innerHTML = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>';
+        // Restart auto-rotate when exiting interact mode
+        this.autoRotate = true;
+        this.isDragging = false;
+      }
+    }
+
+    setupControls() {
+      this.isDragging = false;
+      this.prevX = 0; this.prevY = 0;
+      this.rotX = -0.4; this.rotY = 0.4;
+      this.targetRotX = this.rotX;
+      this.targetRotY = this.rotY;
+      this.autoRotate = true;
+      this.zoom = 1.0;
+      this.targetZoom = 1.0;
+      this.cameraDist = 1.0;
+
+      this.container.addEventListener('pointerdown', (e) => {
+        if (!this.interactMode) return;
+        this.isDragging = true;
+        this.autoRotate = false;
+        this.prevX = e.clientX;
+        this.prevY = e.clientY;
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!this.isDragging) return;
+        this.targetRotY += (e.clientX - this.prevX) * 0.008;
+        this.targetRotX += (e.clientY - this.prevY) * 0.008;
+        this.targetRotX = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, this.targetRotX));
+        this.prevX = e.clientX;
+        this.prevY = e.clientY;
+      });
+      window.addEventListener('pointerup', () => {
+        if (this.isDragging) this.isDragging = false;
+      });
+
+      // Wheel: only capture when in interact mode, otherwise let page scroll
+      this.container.addEventListener('wheel', (e) => {
+        if (!this.interactMode) return;
+        e.preventDefault();
+        this.targetZoom += e.deltaY * 0.0012;
+        this.targetZoom = Math.max(0.5, Math.min(2.5, this.targetZoom));
+      }, { passive: false });
+    }
+
+    setupResize() {
+      const resize = () => {
+        const w = this.container.clientWidth;
+        const h = this.container.clientHeight;
+        this.renderer.setSize(w, h, false);
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+      };
+      resize();
+      new ResizeObserver(resize).observe(this.container);
+    }
+
+    fitCameraToObject(object, padding = 1.5) {
+      const box = new THREE.Box3().setFromObject(object);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      object.position.sub(center);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = this.camera.fov * (Math.PI / 180);
+      this.cameraDist = (maxDim / 2 / Math.tan(fov / 2)) * padding;
+    }
+
+    loadAssembly() {
+      const gltfLoader = new THREE.GLTFLoader();
+
+      const onLoad = (gltf) => {
+        while (this.modelGroup.children.length) this.modelGroup.remove(this.modelGroup.children[0]);
+        this.assemblyParts = [];
+
+        // CAD models use Z-up; Three.js is Y-up — rotate to correct orientation
+        gltf.scene.rotation.x = -Math.PI / 2;
+
+        gltf.scene.traverse((child) => {
+          if (child.isMesh) this.assemblyParts.push({ mesh: child, centerOffset: null });
+        });
+        this.modelGroup.add(gltf.scene);
+        this.assembledScene = gltf.scene;
+        gltf.scene.updateMatrixWorld(true);
+        this.fitCameraToObject(gltf.scene);
+
+        gltf.scene.updateMatrixWorld(true);
+        this.assemblyParts.forEach(p => {
+          const box = new THREE.Box3().setFromObject(p.mesh);
+          const c = box.getCenter(new THREE.Vector3());
+          c.applyMatrix4(new THREE.Matrix4().copy(this.modelGroup.matrixWorld).invert());
+          p.centerOffset = c.clone();
+        });
+
+        this.loader.classList.add('hidden');
+        this.statusEl.textContent = 'READY';
+        this.statusEl.classList.remove('loading');
+      };
+
+      const onError = (err) => { console.error(err); this.statusEl.textContent = 'ERROR'; };
+
+      // Use pre-fetched buffer if available (starts downloading before Three.js CDN loads)
+      if (window._glbPrefetch) {
+        window._glbPrefetch
+          .then(buffer => gltfLoader.parse(buffer, '', onLoad, onError))
+          .catch(onError);
+      } else {
+        gltfLoader.load('assets/Marble_Run_Assembly.glb', onLoad,
+          (p) => { if (p.total) this.statusEl.textContent = `LOADING ${Math.round(p.loaded / p.total * 100)}%`; },
+          onError);
+      }
+    }
+
+    setMode(mode) {
+      this.mode = mode;
+      if (mode === 'assembly' || mode === 'exploded') {
+        if (this.singlePart) { this.modelGroup.remove(this.singlePart); this.singlePart = null; }
+        if (this.assembledScene && !this.assembledScene.parent) {
+          this.modelGroup.add(this.assembledScene);
+          this.fitCameraToObject(this.assembledScene);
+        }
+        this.titleEl.textContent = mode === 'exploded'
+          ? 'INFINITE_MARBLE_RUN.GLB · EXPLODED'
+          : 'INFINITE_MARBLE_RUN.GLB';
+        this.partsEl.textContent = '19 PARTS';
+      }
+    }
+
+    loadSinglePart(partIndex) {
+      const info = PARTS_INFO[partIndex];
+      this.loader.classList.remove('hidden');
+      this.statusEl.textContent = 'LOADING…';
+      this.statusEl.classList.add('loading');
+
+      if (this.assembledScene && this.assembledScene.parent) this.modelGroup.remove(this.assembledScene);
+      if (this.singlePart) { this.modelGroup.remove(this.singlePart); this.singlePart = null; }
+
+      const loader = new THREE.GLTFLoader();
+      loader.load(`assets/${info.file}`, (gltf) => {
+        gltf.scene.rotation.x = -Math.PI / 2;
+        this.singlePart = gltf.scene;
+        this.modelGroup.add(this.singlePart);
+        gltf.scene.updateMatrixWorld(true);
+        this.fitCameraToObject(this.singlePart);
+        this.loader.classList.add('hidden');
+        this.statusEl.textContent = 'READY';
+        this.statusEl.classList.remove('loading');
+        this.titleEl.textContent = `${info.name.toUpperCase()}.GLB`;
+        this.partsEl.textContent = info.desc.toUpperCase();
+      });
+    }
+
+    updateTheme(theme) {
+      this.ambient.intensity = theme === 'light' ? 0.6 : 0.45;
+      this.key.intensity = theme === 'light' ? 0.9 : 0.85;
+    }
+
+    animate() {
+      requestAnimationFrame(this.animate);
+
+      if (this.autoRotate) this.targetRotY += 0.0025;
+      this.rotX += (this.targetRotX - this.rotX) * 0.08;
+      this.rotY += (this.targetRotY - this.rotY) * 0.08;
+      this.zoom += (this.targetZoom - this.zoom) * 0.08;
+
+      this.modelGroup.rotation.x = this.rotX;
+      this.modelGroup.rotation.y = this.rotY;
+
+      const dist = this.cameraDist * this.zoom;
+      this.camera.position.set(0, 0, dist);
+      this.camera.lookAt(0, 0, 0);
+
+      if (this.assemblyParts.length && this.assembledScene && this.assembledScene.parent) {
+        const factor = this.mode === 'exploded' ? 0.6 : 0;
+        this.assemblyParts.forEach(p => {
+          const target = p.centerOffset.clone().multiplyScalar(factor);
+          p.mesh.position.lerp(target, 0.08);
+        });
+      }
+
+      if (this.rotEl) {
+        const deg = Math.round((this.rotY * 180 / Math.PI) % 360);
+        this.rotEl.textContent = `ROT ${deg}°`;
+      }
+
+      this.renderer.render(this.scene, this.camera);
+    }
+  }
+
+  const viewer = new MarbleViewer(document.getElementById('marbleViewer'));
+
+  // Interact toggle
+  document.getElementById('interactBtn').addEventListener('click', () => {
+    viewer.setInteractMode(!viewer.interactMode);
+  });
+
+  // Mode buttons
+  document.querySelectorAll('.control-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
+      if (mode === 'parts') {
+        const firstCard = document.querySelector('.part-card');
+        if (firstCard) firstCard.click();
+      } else {
+        viewer.setMode(mode);
+      }
+      document.getElementById('partsGrid').style.display = mode === 'parts' ? 'grid' : 'none';
+    });
+  });
+
+  // Build parts grid
+  const partsGrid = document.getElementById('partsGrid');
+  PARTS_INFO.forEach((p, i) => {
+    const card = document.createElement('button');
+    card.className = 'part-card';
+    const colorHex = '#' + p.color.toString(16).padStart(6, '0');
+    card.innerHTML = `
+      <div class="part-color" style="background:${colorHex}"></div>
+      <div class="part-num">PART // ${String(i+1).padStart(2,'0')}</div>
+      <div class="part-name">${p.name.replace('_', ' ')}</div>
+      <div class="part-tris">${p.desc}</div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      viewer.loadSinglePart(i);
+    });
+    partsGrid.appendChild(card);
+  });
+</script>
+</body>
+</html>
