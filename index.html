@@ -68,26 +68,29 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 1.25rem 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--transition);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid rgba(230, 51, 18, 0.35);
+    transition: border-color var(--transition), background var(--transition);
   }
-  nav.scrolled { border-bottom-color: var(--border); }
+  nav.scrolled {
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    border-bottom-color: var(--accent);
+  }
   .logo-mark {
     display: flex; align-items: center; gap: 0.85rem;
-    font-family: var(--font-mono); font-size: 0.78rem;
+    font-family: var(--font-mono); font-size: 1rem;
     letter-spacing: 0.1em; color: var(--text);
     text-decoration: none; text-transform: uppercase;
   }
-  .logo-mark img { height: 36px; width: auto; display: none; }
+  .logo-mark img { height: 64px; width: auto; display: none; }
   [data-theme="dark"] .logo-mark .logo-dark { display: block; }
   [data-theme="light"] .logo-mark .logo-light { display: block; }
   .logo-mark .divider { width: 1px; height: 18px; background: var(--border-strong); }
   .nav-links { display: flex; gap: 2.5rem; list-style: none; counter-reset: navcount; }
   .nav-links a {
-    font-family: var(--font-mono); font-size: 0.78rem;
+    font-family: var(--font-mono); font-size: 1rem;
     color: var(--text-muted); text-decoration: none;
     letter-spacing: 0.05em; text-transform: uppercase;
     counter-increment: navcount;
@@ -114,7 +117,7 @@
   main { position: relative; z-index: 1; }
   section { padding: 8rem 2.5rem; max-width: 1400px; margin: 0 auto; position: relative; }
   .section-label {
-    font-family: var(--font-mono); font-size: 0.72rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--accent); letter-spacing: 0.15em;
     text-transform: uppercase; margin-bottom: 1.5rem;
     display: flex; align-items: center; gap: 0.75rem;
@@ -127,7 +130,7 @@
     justify-content: center; padding-top: 8rem; padding-bottom: 4rem;
   }
   .hero-meta {
-    font-family: var(--font-mono); font-size: 0.78rem;
+    font-family: var(--font-mono); font-size: 1rem;
     color: var(--text-muted); margin-bottom: 2rem;
     display: flex; gap: 2rem; flex-wrap: wrap;
   }
@@ -157,7 +160,7 @@
     max-width: 480px; line-height: 1.6;
   }
   .hero-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
     border-top: 1px solid var(--border); padding-top: 2rem;
   }
   .stat-value {
@@ -165,22 +168,22 @@
     font-weight: 500; color: var(--text); letter-spacing: -0.02em;
   }
   .stat-label {
-    font-family: var(--font-mono); font-size: 0.7rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); text-transform: uppercase;
     letter-spacing: 0.1em; margin-top: 0.4rem;
   }
   .scroll-indicator {
-    position: absolute; bottom: 2rem; left: 50%;
+    position: absolute; bottom: 0.5rem; left: 50%;
     transform: translateX(-50%);
-    font-family: var(--font-mono); font-size: 0.7rem;
-    color: var(--text-muted); letter-spacing: 0.15em;
+    font-family: var(--font-mono); font-size: 0.875rem;
+    color: var(--accent); letter-spacing: 0.15em;
     text-transform: uppercase;
-    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
   }
   .scroll-indicator::after {
-    content: ''; width: 1px; height: 32px;
-    background: linear-gradient(to bottom, var(--text-muted), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
+    content: ''; width: 2px; height: 52px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 1.6s ease-in-out infinite;
   }
   @keyframes scrollPulse {
     0% { transform: scaleY(0); transform-origin: top; }
@@ -252,7 +255,7 @@
   }
   .card-number {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.875rem;
     color: var(--accent);
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -270,7 +273,7 @@
     margin-bottom: 1rem;
   }
   .card-desc {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-muted);
     line-height: 1.65;
     margin-bottom: 1.25rem;
@@ -287,14 +290,14 @@
     margin-bottom: 1.5rem;
   }
   .tag {
-    font-family: var(--font-mono); font-size: 0.68rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); padding: 0.35rem 0.65rem;
     border: 1px solid var(--border); border-radius: 100px;
     letter-spacing: 0.04em;
   }
   .card-cta {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 1rem;
     color: var(--accent);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -322,11 +325,11 @@
     margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);
   }
   .info-item .label {
-    font-family: var(--font-mono); font-size: 0.7rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); text-transform: uppercase;
     letter-spacing: 0.1em; margin-bottom: 0.4rem;
   }
-  .info-item .value { font-size: 0.95rem; color: var(--text); }
+  .info-item .value { font-size: 1rem; color: var(--text); }
 
   /* CONTACT */
   .contact { text-align: center; padding: 10rem 2.5rem; }
@@ -353,7 +356,7 @@
   .contact-email:hover::before { transform: translateY(0); }
   .contact-links {
     display: flex; justify-content: center; gap: 2rem;
-    margin-top: 3rem; font-family: var(--font-mono); font-size: 0.78rem;
+    margin-top: 3rem; font-family: var(--font-mono); font-size: 1rem;
   }
   .contact-links a {
     color: var(--text-muted); text-decoration: none;
@@ -363,14 +366,17 @@
   .contact-links a:hover { color: var(--accent); }
 
   footer {
-    border-top: 1px solid var(--border); padding: 2rem 2.5rem;
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 0.72rem;
+    border-top: 1px solid var(--accent); padding: 2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); letter-spacing: 0.05em;
     flex-wrap: wrap; gap: 1rem;
   }
+  footer > * { flex: 1; }
+  footer > span:first-of-type { text-align: center; }
+  footer > span:last-of-type { text-align: right; }
   footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
-  footer .footer-logo img { height: 18px; display: none; }
+  footer .footer-logo img { height: 36px; display: none; }
   [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
   [data-theme="light"] footer .footer-logo .logo-light { display: block; }
 
@@ -385,7 +391,7 @@
 
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
-    .logo-mark img { height: 30px; }
+    .logo-mark img { height: 50px; }
     .logo-mark .divider, .logo-mark .logo-text { display: none; }
     .nav-links { display: none; }
     section { padding: 5rem 1.5rem; }
@@ -412,9 +418,9 @@
     <span class="logo-text">F3_lix / Portfolio</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#work">Designs</a></li>
+    <li><a href="#about">Über mich</a></li>
+    <li><a href="#contact">Kontakt</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" aria-label="Theme umschalten">
     <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -447,8 +453,7 @@
       </p>
       <div class="hero-stats reveal reveal-delay-2">
         <div><div class="stat-value">05</div><div class="stat-label">Projekte</div></div>
-        <div><div class="stat-value">2026</div><div class="stat-label">Aktiv seit</div></div>
-        <div><div class="stat-value">∞</div><div class="stat-label">Iterationen</div></div>
+        <div><div class="stat-value">2018</div><div class="stat-label">Aktiv seit</div></div>
       </div>
     </div>
     <div class="scroll-indicator">SCROLL</div>
@@ -462,13 +467,13 @@
           Projekte, <em style="color:var(--accent);font-style:italic;font-weight:400;">die zählen</em>.
         </h2>
       </div>
-      <span class="reveal reveal-delay-1" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);">[ 05 PROJEKTE — 2024–2026 ]</span>
+      <span class="reveal reveal-delay-1" style="font-family:var(--font-mono);font-size:1rem;color:var(--text-muted);">[ 06 PROJEKTE — 2024–2026 ]</span>
     </div>
 
     <div class="projects-grid">
 
-      <!-- FEATURED: MARBLE RUN -->
-      <a href="marble-run.html" class="project-card featured reveal">
+      <!-- FEATURED: HANDSTAUBSAUGER -->
+      <a href="projekt.html?id=1" class="project-card featured reveal">
         <div class="card-visual">
           <canvas id="card0" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -478,26 +483,24 @@
         </div>
         <div class="card-body">
           <div class="card-number">PROJEKT // 001 — FEATURED</div>
-          <h3 class="card-title">Infinite Marble Run</h3>
+          <h3 class="card-title">Handstaubsauger</h3>
           <p class="card-desc">
-            Motorisierte Endlos-Kugelbahn mit integrierter LED-Beleuchtung und
-            elektronischer Drehzahlregelung. 13 einzigartige Bauteile, vollständig
-            druckoptimiert — von der mechanischen Lagerung über das Antriebszahnrad
-            bis zum Lichtring.
+            Vollständig konstruierter Handstaubsauger als eigenständiges
+            Designprojekt. Entwickelt mit Fokus auf ergonomische Form,
+            funktionale Geometrie und fertigungsgerechte Bauweise.
           </p>
           <div class="card-tags">
-            <span class="tag">Bambu Studio</span>
+            <span class="tag">Siemens NX</span>
             <span class="tag">3D-Druck</span>
-            <span class="tag">Mechatronik</span>
+            <span class="tag">Produktdesign</span>
             <span class="tag">DFM</span>
-            <span class="tag">Baugruppe</span>
           </div>
           <span class="card-cta">→ Zum Projekt</span>
         </div>
       </a>
 
-      <!-- PROJEKT 002 -->
-      <a href="projekt.html?id=2" class="project-card reveal">
+      <!-- PROJEKT 002: MARBLE RUN -->
+      <a href="marble-run.html" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card1" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -507,23 +510,23 @@
         </div>
         <div class="card-body">
           <div class="card-number">PROJEKT // 002</div>
-          <h3 class="card-title">Funktionsbauteil — Prototyp</h3>
+          <h3 class="card-title">Infinite Marble Run</h3>
           <p class="card-desc">
-            Komplexes Funktionsteil mit organisch geformter Geometrie,
-            rekonstruiert aus STL-Vorlage. Iterative Topologie-Optimierung
-            für 3D-Druck-Eignung.
+            Motorisierte Endlos-Kugelbahn mit LED-Beleuchtung und
+            elektronischer Drehzahlregelung. 13 Bauteile, vollständig
+            druckoptimiert.
           </p>
           <div class="card-tags">
-            <span class="tag">Fusion 360</span>
-            <span class="tag">Reverse Engineering</span>
-            <span class="tag">3D-Druck</span>
+            <span class="tag">Bambu Studio</span>
+            <span class="tag">Mechatronik</span>
+            <span class="tag">Baugruppe</span>
           </div>
           <span class="card-cta">→ Zum Projekt</span>
         </div>
       </a>
 
       <!-- PROJEKT 003 -->
-      <a href="projekt.html?id=3" class="project-card reveal">
+      <a href="projekt.html?id=2" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card2" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -533,22 +536,22 @@
         </div>
         <div class="card-body">
           <div class="card-number">PROJEKT // 003</div>
-          <h3 class="card-title">Halterung & Montagebaugruppe</h3>
+          <h3 class="card-title">Funktionsbauteil — Prototyp</h3>
           <p class="card-desc">
-            Parametrische Halterungs-Konstruktion mit toleranzgerechten
-            Passungen. Konzipiert für robusten Einsatz unter mechanischer Last.
+            Komplexes Funktionsteil mit organisch geformter Geometrie,
+            rekonstruiert aus STL-Vorlage.
           </p>
           <div class="card-tags">
-            <span class="tag">Fusion 360</span>
-            <span class="tag">Toleranzanalyse</span>
-            <span class="tag">FEM</span>
+            <span class="tag">Siemens NX</span>
+            <span class="tag">Reverse Engineering</span>
+            <span class="tag">3D-Druck</span>
           </div>
           <span class="card-cta">→ Zum Projekt</span>
         </div>
       </a>
 
       <!-- PROJEKT 004 -->
-      <a href="projekt.html?id=4" class="project-card reveal">
+      <a href="projekt.html?id=3" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card3" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -558,10 +561,35 @@
         </div>
         <div class="card-body">
           <div class="card-number">PROJEKT // 004</div>
+          <h3 class="card-title">Halterung & Montagebaugruppe</h3>
+          <p class="card-desc">
+            Parametrische Halterungs-Konstruktion mit toleranzgerechten
+            Passungen und durchgängiger Maßkette.
+          </p>
+          <div class="card-tags">
+            <span class="tag">Siemens NX</span>
+            <span class="tag">Toleranzanalyse</span>
+            <span class="tag">FEM</span>
+          </div>
+          <span class="card-cta">→ Zum Projekt</span>
+        </div>
+      </a>
+
+      <!-- PROJEKT 005 -->
+      <a href="projekt.html?id=4" class="project-card reveal">
+        <div class="card-visual">
+          <canvas id="card4" aria-hidden="true"></canvas>
+          <div class="viewer-corners">
+            <div class="corner tl"></div><div class="corner tr"></div>
+            <div class="corner bl"></div><div class="corner br"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">PROJEKT // 005</div>
           <h3 class="card-title">Getriebe-Konzeptstudie</h3>
           <p class="card-desc">
             Kompaktes Getriebe mit Fokus auf minimalem Bauraum.
-            Sämtliche Verzahnungen aus Konstruktionsregeln modelliert.
+            Verzahnungen aus Konstruktionsregeln modelliert.
           </p>
           <div class="card-tags">
             <span class="tag">CAD</span>
@@ -572,17 +600,17 @@
         </div>
       </a>
 
-      <!-- PROJEKT 005 -->
+      <!-- PROJEKT 006 — volle Breite, kein freier Platz -->
       <a href="projekt.html?id=5" class="project-card reveal" style="grid-column: 1 / -1; flex-direction: row;">
-        <div class="card-visual" style="width:40%; min-height:240px; flex-shrink:0;">
-          <canvas id="card4" aria-hidden="true"></canvas>
+        <div class="card-visual" style="width:45%; min-height:260px; flex-shrink:0;">
+          <canvas id="card5" aria-hidden="true"></canvas>
           <div class="viewer-corners">
             <div class="corner tl"></div><div class="corner tr"></div>
             <div class="corner bl"></div><div class="corner br"></div>
           </div>
         </div>
         <div class="card-body">
-          <div class="card-number">PROJEKT // 005</div>
+          <div class="card-number">PROJEKT // 006</div>
           <h3 class="card-title">Strukturbauteil — leichtbaugerecht</h3>
           <p class="card-desc">
             Topologie-optimiertes Strukturbauteil mit reduzierter Masse bei erhaltener
@@ -605,22 +633,25 @@
   <section class="about" id="about">
     <div class="section-label reveal">01 / Über mich</div>
     <div class="about-grid">
-      <h2 class="reveal">Ideen werden zu <em>Konstruktionen</em>.</h2>
+      <h2 class="reveal">Ideen werden <em>Real</em>.</h2>
       <div class="about-text reveal reveal-delay-1">
         <p>
-          Ich entwickle und konstruiere mechanische Systeme — von der ersten
-          Skizze bis zum fertigen 3D-Modell. Mein Fokus liegt auf durchdachter
-          Geometrie, sauberen Toleranzen und Konstruktionen, die in der
-          Realität genauso funktionieren wie im CAD.
+          Ich bin 20 Jahre alt und mache eine Ausbildung zum Technischen
+          Produktdesigner. Konstruieren ist für mich mehr als ein Beruf:
+          Ich entwickle mechanische Systeme von der ersten Skizze bis zum
+          fertigen 3D-Modell, mit Fokus auf durchdachte Geometrie und
+          saubere Toleranzen.
         </p>
         <p>
-          Jedes Projekt ist eine Übung in Präzision: Form folgt Funktion,
-          Komplexität wird reduziert, und am Ende soll das Ergebnis sich
-          richtig anfühlen — visuell wie technisch.
+          Besonders fasziniert mich der 3D-Druck. Die Möglichkeit, eine
+          Idee am Morgen zu konstruieren und sie noch am selben Tag in
+          den Händen zu halten, treibt mich an. Jedes Projekt ist eine
+          Übung in Präzision: Form folgt Funktion, und das Ergebnis soll
+          sich richtig anfühlen, visuell wie technisch.
         </p>
         <div class="about-info">
-          <div class="info-item"><div class="label">Spezialisierung</div><div class="value">3D-Konstruktion · CAD</div></div>
-          <div class="info-item"><div class="label">Tools</div><div class="value">Fusion 360 · Bambu Studio</div></div>
+          <div class="info-item"><div class="label">Spezialisierung</div><div class="value">3D-Konstruktion · CAD · 3D-Druck</div></div>
+          <div class="info-item"><div class="label">Tools</div><div class="value">Siemens NX · Bambu Studio</div></div>
           <div class="info-item"><div class="label">Formate</div><div class="value">STEP · STL · 3MF</div></div>
           <div class="info-item"><div class="label">Standort</div><div class="value">Deutschland</div></div>
         </div>
@@ -631,12 +662,11 @@
   <section class="contact" id="contact">
     <div class="section-label reveal" style="justify-content:center;">03 / Kontakt</div>
     <h2 class="reveal reveal-delay-1">Lass uns etwas <em>bauen</em>.</h2>
-    <a href="mailto:hello@example.com" class="contact-email reveal reveal-delay-2">
-      <span>→</span> hello@example.com
+    <a href="mailto:felix@andre-bell.de" class="contact-email reveal reveal-delay-2">
+      <span>→</span> felix@andre-bell.de
     </a>
     <div class="contact-links reveal reveal-delay-3">
-      <a href="#">MakerWorld</a>
-      <a href="#">LinkedIn</a>
+      <a href="https://makerworld.com/de/@F3_lix" target="_blank" rel="noopener">MakerWorld</a>
       <a href="#">Instagram</a>
     </div>
   </section>
@@ -648,7 +678,7 @@
     <img class="logo-light" src="assets/logo.png" alt="F3 Logo" />
     <span>© 2026 — F3_lix</span>
   </div>
-  <span>Crafted with precision</span>
+  <span>Mit Präzision gefertigt</span>
   <span>v2.0.0</span>
 </footer>
 
@@ -682,6 +712,16 @@
   // Non-interactive mini card viewers (auto-rotate only)
   function makeCardGeo(type) {
     switch (type) {
+      case 'vacuum': {
+        const pts = [];
+        for (let i = 0; i <= 14; i++) {
+          const t = i / 14;
+          const y = t * 2.6 - 1.3;
+          const r = 0.48 * (0.35 + Math.sin(t * Math.PI) * 0.65) * (1 + 0.08 * Math.cos(t * Math.PI * 5));
+          pts.push(new THREE.Vector2(r, y));
+        }
+        return new THREE.LatheGeometry(pts, 32);
+      }
       case 'knot0': return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
       case 'knot1': return new THREE.TorusKnotGeometry(0.65, 0.20, 128, 24, 3, 4);
       case 'bracket': {
@@ -709,11 +749,12 @@
   }
 
   const CARDS = [
-    { id: 'card0', geo: 'knot0', color: 0xc73420 },
-    { id: 'card1', geo: 'knot1', color: 0x9a9aa0 },
-    { id: 'card2', geo: 'bracket', color: 0x9a9aa0 },
-    { id: 'card3', geo: 'gear', color: 0x9a9aa0 },
-    { id: 'card4', geo: 'ico', color: 0x9a9aa0 },
+    { id: 'card0', geo: 'vacuum', color: 0xc73420 },
+    { id: 'card1', geo: 'knot0', color: 0x9a9aa0 },
+    { id: 'card2', geo: 'knot1', color: 0x9a9aa0 },
+    { id: 'card3', geo: 'bracket', color: 0x9a9aa0 },
+    { id: 'card4', geo: 'gear', color: 0x9a9aa0 },
+    { id: 'card5', geo: 'ico', color: 0x9a9aa0 },
   ];
 
   CARDS.forEach(({ id, geo, color }) => {

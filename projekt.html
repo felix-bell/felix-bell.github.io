@@ -55,25 +55,28 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 1.25rem 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--transition);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid rgba(230, 51, 18, 0.35);
+    transition: border-color var(--transition), background var(--transition);
   }
-  nav.scrolled { border-bottom-color: var(--border); }
+  nav.scrolled {
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    border-bottom-color: var(--accent);
+  }
   .logo-mark {
     display: flex; align-items: center; gap: 0.85rem;
-    font-family: var(--font-mono); font-size: 0.78rem;
+    font-family: var(--font-mono); font-size: 1rem;
     letter-spacing: 0.1em; color: var(--text);
     text-decoration: none; text-transform: uppercase;
   }
-  .logo-mark img { height: 36px; width: auto; display: none; }
+  .logo-mark img { height: 64px; width: auto; display: none; }
   [data-theme="dark"] .logo-mark .logo-dark { display: block; }
   [data-theme="light"] .logo-mark .logo-light { display: block; }
   .logo-mark .divider { width: 1px; height: 18px; background: var(--border-strong); }
   .nav-right { display: flex; align-items: center; gap: 1.5rem; }
   .back-link {
-    font-family: var(--font-mono); font-size: 0.75rem;
+    font-family: var(--font-mono); font-size: 1rem;
     color: var(--text-muted); text-decoration: none;
     letter-spacing: 0.08em; text-transform: uppercase;
     transition: color var(--transition-fast);
@@ -95,7 +98,7 @@
   main { position: relative; z-index: 1; }
 
   .section-label {
-    font-family: var(--font-mono); font-size: 0.72rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--accent); letter-spacing: 0.15em;
     text-transform: uppercase; margin-bottom: 1.5rem;
     display: flex; align-items: center; gap: 0.75rem;
@@ -114,7 +117,7 @@
   .project-hero h1 em { color: var(--accent); font-style: italic; font-weight: 400; }
   .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
   .tag {
-    font-family: var(--font-mono); font-size: 0.7rem;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); padding: 0.4rem 0.75rem;
     border: 1px solid var(--border); border-radius: 100px;
     letter-spacing: 0.05em;
@@ -128,7 +131,7 @@
   .project-specs-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; }
   .spec-row {
     display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 0.78rem;
+    font-family: var(--font-mono); font-size: 1rem;
     border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;
   }
   .spec-row .key { color: var(--text-muted); }
@@ -162,7 +165,7 @@
   }
   .viewer-meta {
     display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 0.65rem;
+    font-family: var(--font-mono); font-size: 0.8rem;
     color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
   }
 
@@ -172,7 +175,7 @@
     display: flex; gap: 1rem; flex-wrap: wrap;
   }
   .nav-btn {
-    font-family: var(--font-mono); font-size: 0.75rem;
+    font-family: var(--font-mono); font-size: 1rem;
     letter-spacing: 0.08em; text-transform: uppercase;
     padding: 0.6rem 1.25rem; border-radius: 100px;
     text-decoration: none; transition: all var(--transition-fast);
@@ -183,15 +186,15 @@
   .nav-btn.next::after { content: ' →'; }
 
   footer {
-    border-top: 1px solid var(--border); padding: 2rem 2.5rem;
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 0.72rem;
+    border-top: 1px solid var(--accent); padding: 2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); letter-spacing: 0.05em;
     flex-wrap: wrap; gap: 1rem;
     position: relative; z-index: 1;
   }
   footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
-  footer .footer-logo img { height: 18px; display: none; }
+  footer .footer-logo img { height: 36px; display: none; }
   [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
   [data-theme="light"] footer .footer-logo .logo-light { display: block; }
 
@@ -203,7 +206,7 @@
 
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
-    .logo-mark img { height: 30px; }
+    .logo-mark img { height: 50px; }
     .logo-mark .divider, .logo-mark .logo-text { display: none; }
     .project-hero { padding: 8rem 1.5rem 3rem; }
     .project-meta-grid { grid-template-columns: 1fr; gap: 2rem; }
@@ -282,8 +285,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
   const PROJECTS = {
+    1: {
+      number: '001',
+      title: 'Hand-',
+      titleEm: 'staubsauger',
+      tags: ['Siemens NX', '3D-Druck', 'Produktdesign', 'DFM'],
+      desc: 'Vollständig konstruierter Handstaubsauger als eigenständiges Designprojekt. Entwickelt mit Fokus auf ergonomische Form, funktionale Geometrie und fertigungsgerechte Bauweise.',
+      specs: [
+        ['Format', 'STEP'],
+        ['Status', 'In Arbeit'],
+        ['Tool', 'Siemens NX'],
+        ['Jahr', '2026'],
+      ],
+      geoType: 'vacuum',
+      format: 'STEP',
+    },
     2: {
-      number: '002',
+      number: '003',
       title: 'Funktionsbauteil',
       titleEm: 'Prototyp',
       tags: ['Fusion 360', 'Reverse Engineering', '3D-Druck'],
@@ -298,10 +316,10 @@
       format: 'STL',
     },
     3: {
-      number: '003',
+      number: '004',
       title: 'Halterung &',
       titleEm: 'Montagebaugruppe',
-      tags: ['Fusion 360', 'Toleranzanalyse', 'FEM'],
+      tags: ['Siemens NX', 'Toleranzanalyse', 'FEM'],
       desc: 'Parametrische Halterungs-Konstruktion mit toleranzgerechten Passungen und durchgängiger Maßkette. Konzipiert für robusten Einsatz unter mechanischer Last. Alle Schnittstellen sind auf Austauschbarkeit ausgelegt.',
       specs: [
         ['Format', 'STEP'],
@@ -313,7 +331,7 @@
       format: 'STEP',
     },
     4: {
-      number: '004',
+      number: '005',
       title: 'Getriebe-',
       titleEm: 'Konzeptstudie',
       tags: ['CAD', 'Mechanik', 'Konzept'],
@@ -328,7 +346,7 @@
       format: 'STEP',
     },
     5: {
-      number: '005',
+      number: '006',
       title: 'Strukturbauteil',
       titleEm: 'leichtbaugerecht',
       tags: ['Topologie-Opt.', 'Leichtbau', 'Simulation'],
@@ -346,8 +364,8 @@
 
   // Read project ID from URL
   const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get('id')) || 2;
-  const p = PROJECTS[id] || PROJECTS[2];
+  const id = parseInt(params.get('id')) || 1;
+  const p = PROJECTS[id] || PROJECTS[1];
 
   // Populate page
   document.title = `${p.title} ${p.titleEm} — Felix Portfolio`;
@@ -376,7 +394,7 @@
 
   // Prev / Next navigation
   const navEl = document.getElementById('projectNav');
-  const ids = [2, 3, 4, 5];
+  const ids = [1, 2, 3, 4, 5];
   const idx = ids.indexOf(id);
   if (idx > 0) {
     const prev = document.createElement('a');
@@ -414,6 +432,16 @@
   // 3D Viewer
   function makeGeo(type) {
     switch (type) {
+      case 'vacuum': {
+        const pts = [];
+        for (let i = 0; i <= 14; i++) {
+          const t = i / 14;
+          const y = t * 2.6 - 1.3;
+          const r = 0.48 * (0.35 + Math.sin(t * Math.PI) * 0.65) * (1 + 0.08 * Math.cos(t * Math.PI * 5));
+          pts.push(new THREE.Vector2(r, y));
+        }
+        return new THREE.LatheGeometry(pts, 32);
+      }
       case 'torusknot': return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
       case 'bracket': {
         const shape = new THREE.Shape();
