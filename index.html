@@ -179,7 +179,9 @@
     color: var(--accent); letter-spacing: 0.15em;
     text-transform: uppercase;
     display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
   }
+  .scroll-indicator.hidden { opacity: 0; visibility: hidden; }
   .scroll-indicator::after {
     content: ''; width: 2px; height: 52px;
     background: linear-gradient(to bottom, var(--accent), transparent);
@@ -467,7 +469,7 @@
           Projekte, <em style="color:var(--accent);font-style:italic;font-weight:400;">die zählen</em>.
         </h2>
       </div>
-      <span class="reveal reveal-delay-1" style="font-family:var(--font-mono);font-size:1rem;color:var(--text-muted);">[ 06 PROJEKTE — 2024–2026 ]</span>
+      <span class="reveal reveal-delay-1" style="font-family:var(--font-mono);font-size:1rem;color:var(--text-muted);">[ 05 PROJEKTE — 2024–2026 ]</span>
     </div>
 
     <div class="projects-grid">
@@ -485,15 +487,15 @@
           <div class="card-number">PROJEKT // 001 — FEATURED</div>
           <h3 class="card-title">Handstaubsauger</h3>
           <p class="card-desc">
-            Vollständig konstruierter Handstaubsauger als eigenständiges
-            Designprojekt. Entwickelt mit Fokus auf ergonomische Form,
-            funktionale Geometrie und fertigungsgerechte Bauweise.
+            Eigenständig konstruierter Handstaubsauger als vollständiges
+            Produktdesign-Projekt. Von der Formfindung über Ergonomie bis
+            zur fertigungsgerechten Geometrie — durchdacht in jedem Detail.
           </p>
           <div class="card-tags">
             <span class="tag">Siemens NX</span>
-            <span class="tag">3D-Druck</span>
             <span class="tag">Produktdesign</span>
-            <span class="tag">DFM</span>
+            <span class="tag">Ergonomie</span>
+            <span class="tag">CAD</span>
           </div>
           <span class="card-cta">→ Zum Projekt</span>
         </div>
@@ -513,11 +515,11 @@
           <h3 class="card-title">Infinite Marble Run</h3>
           <p class="card-desc">
             Motorisierte Endlos-Kugelbahn mit LED-Beleuchtung und
-            elektronischer Drehzahlregelung. 13 Bauteile, vollständig
-            druckoptimiert.
+            elektronischer Drehzahlregelung. 13 einzigartige Bauteile,
+            vollständig druckoptimiert.
           </p>
           <div class="card-tags">
-            <span class="tag">Bambu Studio</span>
+            <span class="tag">3D-Druck</span>
             <span class="tag">Mechatronik</span>
             <span class="tag">Baugruppe</span>
           </div>
@@ -526,7 +528,7 @@
       </a>
 
       <!-- PROJEKT 003 -->
-      <a href="projekt.html?id=2" class="project-card reveal">
+      <a href="projekt.html?id=3" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card2" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -539,10 +541,10 @@
           <h3 class="card-title">Funktionsbauteil — Prototyp</h3>
           <p class="card-desc">
             Komplexes Funktionsteil mit organisch geformter Geometrie,
-            rekonstruiert aus STL-Vorlage.
+            rekonstruiert aus STL-Vorlage. Iterative Topologie-Optimierung
+            für 3D-Druck-Eignung.
           </p>
           <div class="card-tags">
-            <span class="tag">Siemens NX</span>
             <span class="tag">Reverse Engineering</span>
             <span class="tag">3D-Druck</span>
           </div>
@@ -551,7 +553,7 @@
       </a>
 
       <!-- PROJEKT 004 -->
-      <a href="projekt.html?id=3" class="project-card reveal">
+      <a href="projekt.html?id=4" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card3" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -564,10 +566,9 @@
           <h3 class="card-title">Halterung & Montagebaugruppe</h3>
           <p class="card-desc">
             Parametrische Halterungs-Konstruktion mit toleranzgerechten
-            Passungen und durchgängiger Maßkette.
+            Passungen. Konzipiert für robusten Einsatz unter mechanischer Last.
           </p>
           <div class="card-tags">
-            <span class="tag">Siemens NX</span>
             <span class="tag">Toleranzanalyse</span>
             <span class="tag">FEM</span>
           </div>
@@ -576,7 +577,7 @@
       </a>
 
       <!-- PROJEKT 005 -->
-      <a href="projekt.html?id=4" class="project-card reveal">
+      <a href="projekt.html?id=5" class="project-card reveal">
         <div class="card-visual">
           <canvas id="card4" aria-hidden="true"></canvas>
           <div class="viewer-corners">
@@ -589,7 +590,7 @@
           <h3 class="card-title">Getriebe-Konzeptstudie</h3>
           <p class="card-desc">
             Kompaktes Getriebe mit Fokus auf minimalem Bauraum.
-            Verzahnungen aus Konstruktionsregeln modelliert.
+            Sämtliche Verzahnungen aus Konstruktionsregeln modelliert.
           </p>
           <div class="card-tags">
             <span class="tag">CAD</span>
@@ -600,32 +601,6 @@
         </div>
       </a>
 
-      <!-- PROJEKT 006 — volle Breite, kein freier Platz -->
-      <a href="projekt.html?id=5" class="project-card reveal" style="grid-column: 1 / -1; flex-direction: row;">
-        <div class="card-visual" style="width:45%; min-height:260px; flex-shrink:0;">
-          <canvas id="card5" aria-hidden="true"></canvas>
-          <div class="viewer-corners">
-            <div class="corner tl"></div><div class="corner tr"></div>
-            <div class="corner bl"></div><div class="corner br"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-number">PROJEKT // 006</div>
-          <h3 class="card-title">Strukturbauteil — leichtbaugerecht</h3>
-          <p class="card-desc">
-            Topologie-optimiertes Strukturbauteil mit reduzierter Masse bei erhaltener
-            Steifigkeit. Ergebnis einer iterativen Auslegung zwischen FEM-Simulation
-            und konstruktiver Umsetzung. Massereduktion von 42 % gegenüber dem
-            unoptimierten Ausgangsentwurf.
-          </p>
-          <div class="card-tags">
-            <span class="tag">Topologie-Opt.</span>
-            <span class="tag">Leichtbau</span>
-            <span class="tag">Simulation</span>
-          </div>
-          <span class="card-cta">→ Zum Projekt</span>
-        </div>
-      </a>
 
     </div>
   </section>
@@ -691,8 +666,10 @@
   });
 
   const nav = document.getElementById('nav');
+  const scrollIndicator = document.querySelector('.scroll-indicator');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 20);
+    if (scrollIndicator) scrollIndicator.classList.toggle('hidden', window.scrollY > 150);
   });
 
   function updateTime() {
@@ -712,16 +689,6 @@
   // Non-interactive mini card viewers (auto-rotate only)
   function makeCardGeo(type) {
     switch (type) {
-      case 'vacuum': {
-        const pts = [];
-        for (let i = 0; i <= 14; i++) {
-          const t = i / 14;
-          const y = t * 2.6 - 1.3;
-          const r = 0.48 * (0.35 + Math.sin(t * Math.PI) * 0.65) * (1 + 0.08 * Math.cos(t * Math.PI * 5));
-          pts.push(new THREE.Vector2(r, y));
-        }
-        return new THREE.LatheGeometry(pts, 32);
-      }
       case 'knot0': return new THREE.TorusKnotGeometry(0.7, 0.22, 128, 24, 2, 3);
       case 'knot1': return new THREE.TorusKnotGeometry(0.65, 0.20, 128, 24, 3, 4);
       case 'bracket': {
@@ -745,16 +712,16 @@
         return new THREE.ExtrudeGeometry(shape, { depth: 0.35, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 3 });
       }
       case 'ico': return new THREE.IcosahedronGeometry(1.0, 1);
+      case 'vacuum': return new THREE.CylinderGeometry(0.28, 0.52, 1.8, 32);
     }
   }
 
   const CARDS = [
-    { id: 'card0', geo: 'vacuum', color: 0xc73420 },
-    { id: 'card1', geo: 'knot0', color: 0x9a9aa0 },
-    { id: 'card2', geo: 'knot1', color: 0x9a9aa0 },
+    { id: 'card0', geo: 'vacuum',  color: 0xc73420 },
+    { id: 'card1', geo: 'knot0',   color: 0x9a9aa0 },
+    { id: 'card2', geo: 'knot1',   color: 0x9a9aa0 },
     { id: 'card3', geo: 'bracket', color: 0x9a9aa0 },
-    { id: 'card4', geo: 'gear', color: 0x9a9aa0 },
-    { id: 'card5', geo: 'ico', color: 0x9a9aa0 },
+    { id: 'card4', geo: 'gear',    color: 0x9a9aa0 },
   ];
 
   CARDS.forEach(({ id, geo, color }) => {
