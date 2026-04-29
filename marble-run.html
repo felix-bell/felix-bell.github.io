@@ -188,18 +188,22 @@
   .control-btn.active { background: var(--accent); color: #fff; }
 
   .interact-btn {
+    position: absolute; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+    z-index: 10;
     display: flex; align-items: center; gap: 0.6rem;
-    background: transparent; border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-card) 85%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
     color: var(--text-muted);
-    padding: 0.5rem 1.1rem; font-family: var(--font-mono);
+    padding: 0.5rem 1.25rem; font-family: var(--font-mono);
     font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.08em;
-    cursor: pointer; border-radius: 100px;
+    cursor: pointer; border-radius: 100px; white-space: nowrap;
     transition: all var(--transition-fast);
   }
   .interact-btn:hover { border-color: var(--accent); color: var(--accent); }
   .interact-btn.active {
-    background: var(--accent-soft); border-color: var(--accent);
-    color: var(--accent);
+    background: color-mix(in srgb, var(--accent-soft) 95%, transparent);
+    border-color: var(--accent); color: var(--accent);
   }
   .interact-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 
@@ -238,7 +242,7 @@
   .viewer-meta .loading { color: var(--accent); }
 
   .interact-hint {
-    position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 4.5rem; left: 50%; transform: translateX(-50%);
     font-family: var(--font-mono); font-size: 0.875rem;
     color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
     background: color-mix(in srgb, var(--bg-card) 90%, transparent);
@@ -309,6 +313,9 @@
     flex-wrap: wrap; gap: 1rem;
     position: relative; z-index: 1;
   }
+  footer > * { flex: 1; }
+  footer > span:first-of-type { text-align: center; }
+  footer > span:last-of-type { text-align: right; }
   footer .footer-logo { display: flex; align-items: center; gap: 0.6rem; }
   footer .footer-logo img { height: 36px; display: none; }
   [data-theme="dark"] footer .footer-logo .logo-dark { display: block; }
@@ -392,6 +399,9 @@
         <button class="control-btn" data-mode="exploded">Explosion</button>
         <button class="control-btn" data-mode="parts">Einzelteile</button>
       </div>
+    </div>
+
+    <div class="model-viewer" id="marbleViewer">
       <button class="interact-btn" id="interactBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -399,9 +409,6 @@
         </svg>
         <span id="interactBtnText">Modell steuern</span>
       </button>
-    </div>
-
-    <div class="model-viewer" id="marbleViewer">
       <div class="viewer-loader" id="marbleLoader">
         <div class="loader-dots"><span></span><span></span><span></span></div>
       </div>
